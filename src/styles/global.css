@@ -4,9 +4,9 @@
 
 @layer base {
   :root {
-    --color-bg: #0A0F1F;
-    --color-fg: #FFFFFF;
-    --color-body: #BBBBBB;
+    --color-bg: #FFFFFF;
+    --color-fg: #0A1F44;
+    --color-body: #4B5563;
   }
 
   html {
@@ -32,7 +32,7 @@
   }
 
   *:focus-visible {
-    outline: 2px solid #D4A24C;
+    outline: 2px solid #B8893E;
     outline-offset: 2px;
   }
 }
@@ -61,7 +61,7 @@
   }
 
   .btn-primary {
-    @apply btn bg-canvas text-ink border-ink hover:bg-ink hover:text-canvas;
+    @apply btn bg-ink text-canvas border-ink hover:bg-navy-dark hover:border-navy-dark;
   }
 
   .btn-primary-outline {
@@ -69,11 +69,11 @@
   }
 
   .btn-gold {
-    @apply btn bg-gold text-navy border-gold hover:bg-gold-light hover:border-gold-light;
+    @apply btn bg-gold text-canvas border-gold hover:bg-gold-light hover:border-gold-light;
   }
 
   .btn-ghost {
-    @apply btn bg-transparent text-ink border-hairline hover:border-ink hover:bg-surface;
+    @apply btn bg-transparent text-ink border-hairline-strong hover:border-ink hover:bg-surface;
   }
 
   .text-link-upper {
@@ -87,7 +87,7 @@
 
   /* CSS-only tabs (radio button pattern, SEO-friendly, no JS) */
   .tabs {
-    @apply grid gap-8 md:gap-12 md:grid-cols-[220px_1fr];
+    @apply grid gap-8 md:gap-12 md:grid-cols-[200px_1fr];
   }
 
   .tabs__list {

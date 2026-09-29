@@ -1,0 +1,204 @@
+---
+import { dict } from '../i18n/dict';
+import type { Lang } from '../i18n/config';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = dict(lang);
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const slides = [
+  {
+    src: `${base}/img/Hero%20Banner/hero-02.jpeg`,
+    eyebrow: lang === 'en' ? 'Event Highlight' : lang === 'zh' ? '活動精華' : '活動精華',
+    title:
+      lang === 'en'
+        ? 'Aerospace Talent Networking Reception 2026'
+        : lang === 'zh'
+          ? '航天人才交流酒會 2026'
+          : '航天人才交流酒會 2026',
+    caption:
+      lang === 'en'
+        ? 'Founding members and supporters of HATDF at the inaugural reception.'
+        : lang === 'zh'
+          ? '航天人才發展慈善基金會創會成員與支持者於首屆交流酒會合影。'
+          : '航天人才發展慈善基金會創會成員與支持者於首屆交流酒會合影。',
+  },
+  {
+    src: `${base}/img/Hero%20Banner/hero-03.jpeg`,
+    eyebrow: lang === 'en' ? 'Founding Moment' : lang === 'zh' ? '成立典禮' : '成立典禮',
+    title:
+      lang === 'en'
+        ? 'Foundation Founding Ceremony'
+        : lang === 'zh'
+          ? '基金會成立典禮'
+          : '基金會成立典禮',
+    caption:
+      lang === 'en'
+        ? 'Witnessed by advisors, scholars and students who will shape the next decade of Hong Kong aerospace.'
+        : lang === 'zh'
+          ? '由顧問、學者與學生見證，共同開啟香港航天下一個十年。'
+          : '由顧問、學者與學生見證，共同開啟香港航天下一個十年。',
+  },
+  {
+    src: null,
+    eyebrow: lang === 'en' ? 'Coming Soon' : '即將推出',
+    title: lang === 'en' ? 'Your Event Could Be Here' : '你的活動可以在這裡',
+    caption:
+      lang === 'en'
+        ? 'Send us your group photo from a HKATA-related event and we will feature it on the homepage.'
+        : lang === 'zh'
+          ? '將活動團體照寄給我們，將於主頁精華位置展示。'
+          : '將活動團體照寄給我們，將於主頁精華位置展示。',
+  },
+];
+---
+
+<section class="bg-surface border-y border-hairline" aria-label={lang === 'en' ? 'Event Highlights' : '活動花絮'}>
+  <div class="container-x py-16 md:py-20">
+    <div class="mb-10 md:mb-12 max-w-3xl">
+      <p class="label-upper text-[11px] text-gold mb-4 flex items-center gap-3">
+        <span class="inline-block w-8 h-px bg-gold"></span>
+        {lang === 'en' ? 'Event Highlights' : '活動花絮'}
+      </p>
+      <h2 class="text-3xl md:text-display-md font-bold text-ink leading-[1.1] tracking-tight text-balance">
+        {lang === 'en' ? 'Moments from our community' : '社群中的每一刻'}
+      </h2>
+    </div>
+
+    <div class="hero-slider relative" data-slider data-interval="5000">
+      <div class="hero-slider__track overflow-hidden bg-navy text-canvas shadow-elev" style="aspect-ratio: 16/9;">
+        {slides.map((slide, i) => (
+          <div
+            class:list={['hero-slider__slide absolute inset-0 transition-opacity duration-700', i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none']}
+            data-slide-index={i}
+            aria-hidden={i === 0 ? 'false' : 'true'}
+          >
+            {slide.src ? (
+              <img
+                src={slide.src}
+                alt={slide.title}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                class="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <div class="absolute inset-0 grid place-items-center bg-gradient-to-br from-navy via-navy-dark to-navy-light">
+                <div class="text-center px-8 max-w-2xl">
+                  <svg class="w-16 h-16 mx-auto mb-6 text-gold opacity-60" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2L4 12h5v8h6v-8h5L12 2z" />
+                  </svg>
+                  <p class="label-upper text-[11px] text-gold mb-4">{slide.eyebrow}</p>
+                  <h3 class="text-2xl md:text-4xl font-bold text-canvas leading-tight mb-3">{slide.title}</h3>
+                  <p class="text-canvas/80 leading-relaxed">{slide.caption}</p>
+                </div>
+              </div>
+            )}
+            {slide.src && (
+              <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-canvas/95 via-canvas/60 to-transparent p-6 md:p-10">
+                <p class="label-upper text-[10px] text-gold mb-2">{slide.eyebrow}</p>
+                <h3 class="text-xl md:text-3xl font-bold text-ink leading-tight mb-2 max-w-3xl">{slide.title}</h3>
+                <p class="text-body text-sm md:text-base leading-relaxed max-w-2xl">{slide.caption}</p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        class="hero-slider__nav hero-slider__nav--prev absolute top-1/2 left-3 md:left-5 -translate-y-1/2 w-11 h-11 grid place-items-center bg-canvas/90 hover:bg-canvas text-ink border border-hairline transition"
+        aria-label={lang === 'en' ? 'Previous slide' : '上一張'}
+        data-slider-prev
+      >
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M15 6l-6 6 6 6" />
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        class="hero-slider__nav hero-slider__nav--next absolute top-1/2 right-3 md:right-5 -translate-y-1/2 w-11 h-11 grid place-items-center bg-canvas/90 hover:bg-canvas text-ink border border-hairline transition"
+        aria-label={lang === 'en' ? 'Next slide' : '下一張'}
+        data-slider-next
+      >
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 6l6 6-6 6" />
+        </svg>
+      </button>
+
+      <div class="hero-slider__dots absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10" role="tablist" aria-label={lang === 'en' ? 'Slide navigation' : '幻燈片導航'}>
+        {slides.map((_, i) => (
+          <button
+            type="button"
+            class:list={[
+              'hero-slider__dot w-2.5 h-2.5 rounded-full transition-all border border-canvas/80',
+              i === 0 ? 'bg-canvas w-8' : 'bg-canvas/40 hover:bg-canvas/70',
+            ]}
+            role="tab"
+            aria-label={`${lang === 'en' ? 'Go to slide' : '跳至第'} ${i + 1} ${lang === 'en' ? '' : '張'}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            data-slider-dot={i}
+          ></button>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const initSlider = (el: HTMLElement) => {
+    const slides = Array.from(el.querySelectorAll<HTMLElement>('[data-slide-index]'));
+    const dots = Array.from(el.querySelectorAll<HTMLButtonElement>('[data-slider-dot]'));
+    const prevBtn = el.querySelector<HTMLButtonElement>('[data-slider-prev]');
+    const nextBtn = el.querySelector<HTMLButtonElement>('[data-slider-next]');
+    if (slides.length < 2) return;
+    const interval = parseInt(el.dataset.interval ?? '5000', 10);
+    let current = 0;
+    let timer: number | undefined;
+
+    const show = (i: number) => {
+      const next = ((i % slides.length) + slides.length) % slides.length;
+      slides.forEach((s, idx) => {
+        const active = idx === next;
+        s.classList.toggle('opacity-100', active);
+        s.classList.toggle('opacity-0', !active);
+        s.classList.toggle('pointer-events-none', !active);
+        s.setAttribute('aria-hidden', active ? 'false' : 'true');
+      });
+      dots.forEach((d, idx) => {
+        const active = idx === next;
+        d.classList.toggle('bg-canvas', active);
+        d.classList.toggle('w-8', active);
+        d.classList.toggle('bg-canvas/40', !active);
+        d.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      current = next;
+    };
+
+    const start = () => {
+      stop();
+      timer = window.setInterval(() => show(current + 1), interval);
+    };
+    const stop = () => {
+      if (timer !== undefined) {
+        clearInterval(timer);
+        timer = undefined;
+      }
+    };
+
+    prevBtn?.addEventListener('click', () => { show(current - 1); start(); });
+    nextBtn?.addEventListener('click', () => { show(current + 1); start(); });
+    dots.forEach((d, i) => d.addEventListener('click', () => { show(i); start(); }));
+
+    el.addEventListener('mouseenter', stop);
+    el.addEventListener('mouseleave', start);
+
+    start();
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-slider]').forEach(initSlider);
+</script>
