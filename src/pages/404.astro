@@ -3,8 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from '../components/Container.astro';
 import Section from '../components/Section.astro';
 import { dict } from '../i18n/dict';
+import { langPath } from '../i18n/config';
 
-const lang = (Astro.url.pathname.match(/^\/(hk|zh|en)/)?.[1] ?? 'hk') as 'hk' | 'zh' | 'en';
+const lang = (Astro.url.pathname.match(/\/(hk|zh|en)(?=\/|$)/)?.[1] ?? 'hk') as 'hk' | 'zh' | 'en';
 const d = dict(lang);
 ---
 
@@ -22,7 +23,7 @@ const d = dict(lang);
               : '您要找的頁面可能已被移動或不存在。'}
         </p>
         <div class="mt-10">
-          <a href={`/${lang}/`} class="btn btn-gold">
+          <a href={langPath(lang)} class="btn btn-gold">
             ← {d.nav.home}
           </a>
         </div>

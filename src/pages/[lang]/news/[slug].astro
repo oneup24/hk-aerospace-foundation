@@ -4,6 +4,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Container from '../../../components/Container.astro';
 import Section from '../../../components/Section.astro';
 import { dict } from '../../../i18n/dict';
+import { langPath } from '../../../i18n/config';
 
 export async function getStaticPaths() {
   const langs = ['hk', 'zh', 'en'] as const;
@@ -22,6 +23,7 @@ export async function getStaticPaths() {
 
 const { item, lang } = Astro.props as { item: any; lang: 'hk' | 'zh' | 'en' };
 const d = dict(lang);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://hatdf.org';
 const { Content } = await item.render();
 const dateStr = item.data.date.toLocaleDateString(lang === 'en' ? 'en-GB' : lang === 'zh' ? 'zh-CN' : 'zh-HK', {
   year: 'numeric', month: 'long', day: 'numeric',
@@ -41,7 +43,7 @@ const articleJsonLd = {
   publisher: {
     '@type': 'Organization',
     name: 'HATDF',
-    logo: { '@type': 'ImageObject', url: 'https://hatdf.org/logo.png' },
+    logo: { '@type': 'ImageObject', url: `${siteUrl}${import.meta.env.BASE_URL}/logo.png` },
   },
 };
 ---
@@ -51,9 +53,9 @@ const articleJsonLd = {
     <Container>
       <div class="py-16 md:py-20 max-w-4xl">
         <nav class="text-xs text-muted mb-8 flex items-center gap-2 label-upper" aria-label="Breadcrumb">
-          <a href={`/${lang}/`} class="hover:text-gold transition-colors">{d.nav.home}</a>
+          <a href={langPath(lang)} class="hover:text-gold transition-colors">{d.nav.home}</a>
           <span aria-hidden="true">›</span>
-          <a href={`/${lang}/news`} class="hover:text-gold transition-colors">{d.nav.news}</a>
+          <a href={langPath(lang, 'news')} class="hover:text-gold transition-colors">{d.nav.news}</a>
         </nav>
         <span class="inline-block label-upper text-[10px] bg-gold text-navy px-3 py-1.5">{item.data.category}</span>
         <h1 class="mt-5 text-3xl md:text-5xl font-bold text-ink leading-[1.1] tracking-tight text-balance">{item.data.title}</h1>
@@ -73,7 +75,7 @@ const articleJsonLd = {
         <Content />
       </article>
       <div class="max-w-3xl mx-auto mt-16 pt-8 border-t border-hairline">
-        <a href={`/${lang}/news`} class="text-link-upper text-[11px]">
+        <a href={langPath(lang, 'news')} class="text-link-upper text-[11px]">
           ← {d.common.backToInsights}
         </a>
       </div>

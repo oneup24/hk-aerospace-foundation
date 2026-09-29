@@ -20,3 +20,10 @@ export const LANG_OG: Record<Lang, string> = {
   zh: 'zh_CN',
   en: 'en_US',
 };
+
+export const SITE_BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+export function langPath(lang: Lang, suffix: string = ''): string {
+  const trimmed = suffix ? (suffix.startsWith('/') ? suffix : `/${suffix}`) : '';
+  return `${SITE_BASE}/${lang}${trimmed}`;
+}

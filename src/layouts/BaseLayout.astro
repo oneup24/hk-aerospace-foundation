@@ -3,7 +3,7 @@ import '../styles/global.css';
 import NavBar from '../components/NavBar.astro';
 import Footer from '../components/Footer.astro';
 import { dict } from '../i18n/dict';
-import { LANG_HTML, LANG_OG } from '../i18n/config';
+import { LANG_HTML, LANG_OG, SITE_BASE } from '../i18n/config';
 import type { Lang } from '../i18n/config';
 
 export interface Props {
@@ -17,17 +17,18 @@ export interface Props {
 
 const { title, description, ogImage, lang, bodyClass = '', jsonLd } = Astro.props;
 const d = dict(lang);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://hatdf.org';
 const fullTitle = title ? `${title} · ${d.site.short}` : `${d.site.name} · ${d.site.tagline}`;
 const desc = description ?? d.home.heroSubtitle;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://hatdf.org').toString();
+const canonical = `${siteUrl}${Astro.url.pathname}`;
 
 const orgJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'NGO',
   name: d.site.name,
   alternateName: d.site.short,
-  url: 'https://hatdf.org',
-  logo: 'https://hatdf.org/logo.png',
+  url: `${siteUrl}${SITE_BASE}/`,
+  logo: `${siteUrl}${SITE_BASE}/logo.png`,
   description: d.footer.description,
   email: 'mailto:info@hatdf.org.hk',
   telephone: '+852 6113 0828',
@@ -49,7 +50,7 @@ const allJsonLd = jsonLd ? (Array.isArray(jsonLd) ? [orgJsonLd, ...jsonLd] : [or
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={desc} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL}/logo.png`} />
     <link rel="alternate" hreflang="zh-HK" href={canonical.replace(/\/(zh|en)\//, '/hk/')} />
     <link rel="alternate" hreflang="zh-CN" href={canonical.replace(/\/(hk|en)\//, '/zh/')} />
     <link rel="alternate" hreflang="en" href={canonical.replace(/\/(hk|zh)\//, '/en/')} />

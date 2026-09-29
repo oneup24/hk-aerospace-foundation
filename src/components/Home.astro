@@ -6,12 +6,13 @@ import Section from './Section.astro';
 import StatBlock from './StatBlock.astro';
 import NewsCard from './NewsCard.astro';
 import { dict } from '../i18n/dict';
+import { langPath } from '../i18n/config';
 import type { Lang } from '../i18n/config';
 
 export interface Props { lang: Lang }
 const { lang } = Astro.props;
 const d = dict(lang);
-const base = `/${lang}`;
+const base = langPath(lang);
 
 const news = (await getCollection('news', ({ id }) => id.startsWith(`${lang}/`)))
   .sort((a, b) => +b.data.date - +a.data.date)

@@ -5,6 +5,7 @@ import Container from './Container.astro';
 import Section from './Section.astro';
 import NewsCard from './NewsCard.astro';
 import { dict } from '../i18n/dict';
+import { langPath } from '../i18n/config';
 import type { Lang } from '../i18n/config';
 
 export interface Props { lang: Lang }
@@ -39,7 +40,7 @@ const news = (await getCollection('news', ({ id }) => id.startsWith(`${lang}/`))
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {news.map((n) => (
             <NewsCard
-              href={`/${lang}/news/${n.slug.replace(new RegExp(`^${lang}/`), '')}`}
+              href={langPath(lang, `news/${n.slug.replace(new RegExp(`^${lang}/`), '')}`)}
               category={n.data.category}
               title={n.data.title}
               excerpt={n.data.excerpt}

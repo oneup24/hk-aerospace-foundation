@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from './Container.astro';
 import Section from './Section.astro';
 import { dict } from '../i18n/dict';
+import { langPath } from '../i18n/config';
 import type { Lang } from '../i18n/config';
 
 export interface Props { lang: Lang }
@@ -134,7 +135,7 @@ const works = [
         </h2>
         <p class="mt-6 text-lg text-body leading-relaxed">{d.about.gettingInvolvedBody}</p>
         <div class="mt-10">
-          <a href={`/${lang}/contact`} class="btn btn-gold">
+          <a href={langPath(lang, 'contact')} class="btn btn-gold">
             {d.about.gettingInvolvedCta}
             <svg class="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
