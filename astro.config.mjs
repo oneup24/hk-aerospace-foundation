@@ -3,8 +3,12 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 
+const isGitHubPages = process.env.GITHUB_ACTIONS === 'true';
+const siteUrl = process.env.SITE_URL ?? (isGitHubPages ? 'https://oneup24.github.io' : 'https://hatdf.org');
+
 export default defineConfig({
-  site: 'https://hatdf.org',
+  site: siteUrl,
+  base: isGitHubPages ? '/hk-aerospace-foundation' : '/',
   i18n: {
     defaultLocale: 'hk',
     locales: ['hk', 'zh', 'en'],
