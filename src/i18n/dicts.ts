@@ -76,19 +76,26 @@ export const D: Record<'hk' | 'zh' | 'en', Dict> = {
       ctaPrimary: '聯絡我們',
       ctaSecondary: '閱讀所有洞察',
     },
-    about: {
+about: {
       pageEyebrow: 'About the Foundation',
       pageTitle: '關於基金會',
       pageLead:
         '香港航天人才發展慈善基金會（HATDF）成立於 2026 年，是一家專注於香港航天人才培養與航天科技發展的本地慈善機構。',
+      tabsLabel: '關於基金會',
+      tab1: '我們的使命',
+      tab2: '為何是香港',
+      tab3: '我們的工作',
+      tab4: '基金會架構',
       missionEyebrow: 'Mission',
       missionTitle: '我們的使命',
       missionQuote:
         '讓香港成為國家航天版圖中不可或缺的人才樞紐。從課堂到實驗室、從產業到世界——我們為有才華的航天人才鋪路。',
+      missionBody:
+        '我們相信人才是香港航天的真正起點。透過獎學金、青年人才交流、科研資助配套與科普教育四大方向，我們為香港的航天人才提供從校園到產業的整個成長路徑。',
       whyEyebrow: 'Why Hong Kong',
       whyTitle: '為何是香港',
       whyBody:
-        '香港是國家唯一擁有普通法體系、國際金融中心地位與多元教育體系的國際都會。「一國兩制」下，香港是國家連接國際航天資源的最佳接口；本地 8 所大學化學數受教資會資助，其中 5 所已開設航天或相關學科；InnoHK 創新香港研發平台已吸納本地與國際頂尖實驗室落戶。所有這些，都是香港發展航天的天然優勢。',
+        '香港是國家唯一擁有普通法體系、國際金融中心地位與多元教育體系的國際都會。「一國兩制」下，香港是國家連接國際航天資源的最佳接口；本地 8 所大學受教資會資助，其中 5 所已開設航天或相關學科；InnoHK 創新香港研發平台已吸納本地與國際頂尖實驗室落戶。所有這些，都是香港發展航天的天然優勢。',
       whyNowEyebrow: 'Why Now',
       whyNowTitle: '為何是現在',
       whyNowBullets: [
@@ -115,6 +122,16 @@ export const D: Record<'hk' | 'zh' | 'en', Dict> = {
       alignBullet2: '香港 2026 施政報告 ——「前沿科技專組」與「航天科技特別項目徵集」',
       alignBullet3: '北部都會區 —— 三個大學城及研究學額擴容',
       alignBullet4: '人才政策 —— 博士獎學金、青年職位及實習計劃',
+      governanceEyebrow: 'Governance',
+      governanceTitle: '基金會架構',
+      governanceLead:
+        '基金會由董事會領導，下設執行委員會及專責委員會，負責日常運作與項目推進。',
+      governanceBoardTitle: '董事會',
+      governanceBoardLead: '負責基金會的策略方向、財務監督及重大決策。',
+      governanceBoardPlaceholder: '董事會成員名單將於基金會正式公開後公佈。',
+      governanceTeamTitle: '執行與委員會',
+      governanceTeamLead: '負責獎學金、青年交流、科普教育等項目的日常執行。',
+      governanceTeamPlaceholder: '團隊與委員會名單將於籌備後期公佈。',
       gettingInvolvedEyebrow: 'Get Involved',
       gettingInvolvedTitle: '與我們同行',
       gettingInvolvedBody:
@@ -244,14 +261,21 @@ export const D: Record<'hk' | 'zh' | 'en', Dict> = {
       pageTitle: '关于基金会',
       pageLead:
         '香港航天人才发展慈善基金会（HATDF）成立于 2026 年，是一家专注于香港航天人才培养与航天科技发展的本地慈善机构。',
+      tabsLabel: '关于基金会',
+      tab1: '我们的使命',
+      tab2: '为何是香港',
+      tab3: '我们的工作',
+      tab4: '基金会架构',
       missionEyebrow: 'Mission',
       missionTitle: '我们的使命',
       missionQuote:
         '让香港成为国家航天版图中不可或缺的人才枢纽。从课堂到实验室、从产业到世界——我们为有才华的航天人才铺路。',
+      missionBody:
+        '我们相信人才是香港航天的真正起点。透过奖学金、青年人才交流、科研资助配套与科普教育四大方向，我们为香港的航天人才提供从校园到产业的整个成长路径。',
       whyEyebrow: 'Why Hong Kong',
       whyTitle: '为何是香港',
       whyBody:
-        '香港是国家唯一拥有普通法体系、国际金融中心地位与多元教育体系的国际都会。「一国两制」下，香港是国家连接国际航天资源的最佳接口；本地 8 所大学受教资会资助，其中5 所已开设航天或相关学科；InnoHK 创新香港研发平台已吸纳本地与国际顶尖实验室落户。所有这些，都是香港发展航天的天然优势。',
+        '香港是国家唯一拥有普通法体系、国际金融中心地位与多元教育体系的国际都会。「一国两制」下，香港是国家连接国际航天资源的最佳接口；本地 8 所大学受教资会资助，其中 5 所已开设航天或相关学科；InnoHK 创新香港研发平台已吸纳本地与国际顶尖实验室落户。所有这些，都是香港发展航天的天然优势。',
       whyNowEyebrow: 'Why Now',
       whyNowTitle: '为何是现在',
       whyNowBullets: [
@@ -278,6 +302,16 @@ export const D: Record<'hk' | 'zh' | 'en', Dict> = {
       alignBullet2: '香港 2026 施政报告 ——「前沿科技专组」与「航天科技特别项目征集」',
       alignBullet3: '北部都会区 —— 三个大学城及研究学额扩容',
       alignBullet4: '人才政策 —— 博士奖学金、青年职位及实习计划',
+      governanceEyebrow: 'Governance',
+      governanceTitle: '基金会架构',
+      governanceLead:
+        '基金会由董事会领导，下设执行委员会及专责委员会，负责日常运作与项目推进。',
+      governanceBoardTitle: '董事会',
+      governanceBoardLead: '负责基金会的策略方向、财务监督及重大决策。',
+      governanceBoardPlaceholder: '董事会成员名单将於基金会正式公开后公布。',
+      governanceTeamTitle: '执行与委员会',
+      governanceTeamLead: '负责奖学金、青年交流、科普教育等项目的日常执行。',
+      governanceTeamPlaceholder: '团队与委员会名单将於筹备后期公布。',
       gettingInvolvedEyebrow: 'Get Involved',
       gettingInvolvedTitle: '与我们同行',
       gettingInvolvedBody:
@@ -407,10 +441,17 @@ export const D: Record<'hk' | 'zh' | 'en', Dict> = {
       pageTitle: 'About the Foundation',
       pageLead:
         'The Hong Kong Aerospace Talent Development Foundation (HATDF), established in 2026, is a local charitable foundation dedicated to nurturing aerospace talent and advancing aerospace technology in Hong Kong.',
+      tabsLabel: 'About the Foundation',
+      tab1: 'Our Mission',
+      tab2: 'Why Hong Kong',
+      tab3: 'What We Do',
+      tab4: 'Governance',
       missionEyebrow: 'Mission',
       missionTitle: 'Our Mission',
       missionQuote:
         "To make Hong Kong an indispensable talent hub in China's aerospace landscape. From classroom to lab, from industry to the world — we pave the way for aerospace talent.",
+      missionBody:
+        "We believe talent is the true launchpad of Hong Kong aerospace. Through scholarships, youth exchange, research funding and public outreach, we cover the full growth path of aerospace talent — from classroom to career.",
       whyEyebrow: 'Why Hong Kong',
       whyTitle: 'Why Hong Kong',
       whyBody:
@@ -441,6 +482,16 @@ export const D: Record<'hk' | 'zh' | 'en', Dict> = {
       alignBullet2: "HK 2026 Policy Address — Frontier Technology Task Group and the Aerospace Technology Special Call",
       alignBullet3: 'Northern Metropolis — three university towns and expanded research seats',
       alignBullet4: 'Talent policy — PhD fellowships, the 30,000 Youth Employment & Internship Programme',
+      governanceEyebrow: 'Governance',
+      governanceTitle: 'Governance',
+      governanceLead:
+        'The Foundation is led by a Board of Directors, supported by an Executive Committee and dedicated sub-committees.',
+      governanceBoardTitle: 'Board of Directors',
+      governanceBoardLead: 'Responsible for strategic direction, financial oversight and key decisions.',
+      governanceBoardPlaceholder: 'The Board roster will be published once the Foundation is officially announced.',
+      governanceTeamTitle: 'Executive & Committees',
+      governanceTeamLead: 'Driving day-to-day execution of scholarships, youth exchange and outreach programmes.',
+      governanceTeamPlaceholder: 'The team and committee roster will be published in a later phase of the founding process.',
       gettingInvolvedEyebrow: 'Get Involved',
       gettingInvolvedTitle: 'Stand With Us',
       gettingInvolvedBody:

@@ -34,94 +34,108 @@ const works = [
     </Container>
   </section>
 
-  <Section bg="navy" pad="lg">
-    <Container>
-      <div class="max-w-4xl mx-auto text-center">
-        <p class="label-upper text-[11px] text-gold mb-6">{d.about.missionEyebrow}</p>
-        <h2 class="text-3xl md:text-display-md font-bold text-ink leading-[1.1] tracking-tight text-balance">
-          {d.about.missionTitle}
-        </h2>
-        <blockquote class="mt-10 text-xl md:text-2xl text-ink leading-relaxed font-serif max-w-3xl mx-auto text-balance">
-          “{d.about.missionQuote}”
-        </blockquote>
-      </div>
-    </Container>
-  </Section>
-
   <Section pad="lg">
     <Container>
-      <div class="grid md:grid-cols-12 gap-10 md:gap-16">
-        <div class="md:col-span-4">
-          <p class="label-upper text-[11px] text-gold mb-5">{d.about.whyEyebrow}</p>
-          <h2 class="text-3xl md:text-display-sm font-bold text-ink leading-[1.1] tracking-tight">
-            {d.about.whyTitle}
-          </h2>
-        </div>
-        <div class="md:col-span-8">
-          <p class="text-lg text-body-strong leading-relaxed">{d.about.whyBody}</p>
-        </div>
-      </div>
-    </Container>
-  </Section>
+      <div class="tabs">
+        <input class="tabs__radio tabs__radio--1" type="radio" name="about-tab" id="tab-1" checked aria-label={d.about.tab1} />
+        <input class="tabs__radio tabs__radio--2" type="radio" name="about-tab" id="tab-2" aria-label={d.about.tab2} />
+        <input class="tabs__radio tabs__radio--3" type="radio" name="about-tab" id="tab-3" aria-label={d.about.tab3} />
+        <input class="tabs__radio tabs__radio--4" type="radio" name="about-tab" id="tab-4" aria-label={d.about.tab4} />
 
-  <Section bg="surface" pad="lg">
-    <Container>
-      <div class="grid md:grid-cols-12 gap-10 md:gap-16">
-        <div class="md:col-span-4">
-          <p class="label-upper text-[11px] text-gold mb-5">{d.about.whyNowEyebrow}</p>
-          <h2 class="text-3xl md:text-display-sm font-bold text-ink leading-[1.1] tracking-tight">
-            {d.about.whyNowTitle}
-          </h2>
+        <div class="tabs__list" role="tablist" aria-label={d.about.tabsLabel}>
+          <label class="tabs__tab" role="tab" for="tab-1">{d.about.tab1}</label>
+          <label class="tabs__tab" role="tab" for="tab-2">{d.about.tab2}</label>
+          <label class="tabs__tab" role="tab" for="tab-3">{d.about.tab3}</label>
+          <label class="tabs__tab" role="tab" for="tab-4">{d.about.tab4}</label>
         </div>
-        <div class="md:col-span-8">
-          <ul class="space-y-4">
-            {d.about.whyNowBullets.map((bullet, i) => (
-              <li class="flex gap-5 text-lg text-body-strong leading-relaxed">
-                <span class="shrink-0 label-upper text-[10px] text-gold pt-2">0{i + 1}</span>
-                <span>{bullet}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </Container>
-  </Section>
 
-  <Section pad="lg">
-    <Container>
-      <div class="mb-12 md:mb-16 max-w-3xl">
-        <p class="label-upper text-[11px] text-gold mb-5">{d.about.whatEyebrow}</p>
-        <h2 class="text-3xl md:text-display-md font-bold text-ink leading-[1.1] tracking-tight">
-          {d.about.whatTitle}
-        </h2>
-        <p class="mt-5 text-lg text-body leading-relaxed">{d.about.whatLead}</p>
-      </div>
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {works.map((w) => (
-          <article class="border-l border-hairline-strong hover:border-gold transition-colors pl-6 py-3">
-            <span class="label-upper text-[10px] text-gold">{w.num}</span>
-            <h3 class="mt-3 text-xl font-bold text-ink">{w.title}</h3>
-            <p class="mt-3 text-sm text-body leading-relaxed">{w.desc}</p>
+        <div class="tabs__panels">
+          <article class="tabs__panel tabs__panel--1" role="tabpanel" aria-labelledby="tab-1">
+            <p class="label-upper text-[11px] text-gold mb-5">{d.about.missionEyebrow}</p>
+            <h2 class="text-3xl md:text-display-md font-bold text-ink leading-[1.1] tracking-tight text-balance">
+              {d.about.missionTitle}
+            </h2>
+            <blockquote class="mt-10 text-xl md:text-2xl text-ink leading-relaxed font-serif max-w-3xl text-balance">
+              "{d.about.missionQuote}"
+            </blockquote>
+            <p class="mt-8 text-lg text-body-strong leading-relaxed max-w-3xl">{d.about.missionBody}</p>
           </article>
-        ))}
-      </div>
-    </Container>
-  </Section>
 
-  <Section bg="surface-soft" pad="md">
-    <Container>
-      <div class="max-w-3xl">
-        <p class="label-upper text-[11px] text-gold mb-5">{d.about.alignEyebrow}</p>
-        <h2 class="text-3xl md:text-display-sm font-bold text-ink leading-[1.1] tracking-tight">
-          {d.about.alignTitle}
-        </h2>
-        <p class="mt-5 text-lg text-body leading-relaxed">{d.about.alignLead}</p>
-        <ul class="mt-8 space-y-3 text-body-strong">
-          <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet1}</span></li>
-          <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet2}</span></li>
-          <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet3}</span></li>
-          <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet4}</span></li>
-        </ul>
+          <article class="tabs__panel tabs__panel--2" role="tabpanel" aria-labelledby="tab-2">
+            <div class="mb-12">
+              <p class="label-upper text-[11px] text-gold mb-5">{d.about.whyEyebrow}</p>
+              <h2 class="text-3xl md:text-display-sm font-bold text-ink leading-[1.1] tracking-tight">
+                {d.about.whyTitle}
+              </h2>
+              <p class="mt-5 text-lg text-body-strong leading-relaxed">{d.about.whyBody}</p>
+            </div>
+            <div>
+              <p class="label-upper text-[11px] text-gold mb-5">{d.about.whyNowEyebrow}</p>
+              <h3 class="text-2xl md:text-display-sm font-bold text-ink leading-[1.15] tracking-tight mb-6">
+                {d.about.whyNowTitle}
+              </h3>
+              <ul class="space-y-4">
+                {d.about.whyNowBullets.map((bullet, i) => (
+                  <li class="flex gap-5 text-lg text-body-strong leading-relaxed">
+                    <span class="shrink-0 label-upper text-[10px] text-gold pt-2">0{i + 1}</span>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+
+          <article class="tabs__panel tabs__panel--3" role="tabpanel" aria-labelledby="tab-3">
+            <p class="label-upper text-[11px] text-gold mb-5">{d.about.whatEyebrow}</p>
+            <h2 class="text-3xl md:text-display-md font-bold text-ink leading-[1.1] tracking-tight">
+              {d.about.whatTitle}
+            </h2>
+            <p class="mt-5 text-lg text-body leading-relaxed">{d.about.whatLead}</p>
+            <div class="mt-10 grid gap-6 sm:grid-cols-2">
+              {works.map((w) => (
+                <article class="border-l border-hairline-strong hover:border-gold transition-colors pl-6 py-3">
+                  <span class="label-upper text-[10px] text-gold">{w.num}</span>
+                  <h3 class="mt-3 text-xl font-bold text-ink">{w.title}</h3>
+                  <p class="mt-3 text-sm text-body leading-relaxed">{w.desc}</p>
+                </article>
+              ))}
+            </div>
+            <div class="mt-12 pt-8 border-t border-hairline">
+              <p class="label-upper text-[11px] text-gold mb-5">{d.about.alignEyebrow}</p>
+              <h3 class="text-2xl md:text-display-sm font-bold text-ink leading-[1.15] tracking-tight">
+                {d.about.alignTitle}
+              </h3>
+              <p class="mt-4 text-body leading-relaxed">{d.about.alignLead}</p>
+              <ul class="mt-6 space-y-3 text-body-strong">
+                <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet1}</span></li>
+                <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet2}</span></li>
+                <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet3}</span></li>
+                <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet4}</span></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="tabs__panel tabs__panel--4" role="tabpanel" aria-labelledby="tab-4">
+            <p class="label-upper text-[11px] text-gold mb-5">{d.about.governanceEyebrow}</p>
+            <h2 class="text-3xl md:text-display-md font-bold text-ink leading-[1.1] tracking-tight">
+              {d.about.governanceTitle}
+            </h2>
+            <p class="mt-5 text-lg text-body leading-relaxed max-w-3xl">{d.about.governanceLead}</p>
+
+            <div class="mt-12 grid gap-8 md:grid-cols-2">
+              <div class="border-l border-hairline-strong pl-6">
+                <h3 class="text-xl font-bold text-ink">{d.about.governanceBoardTitle}</h3>
+                <p class="mt-3 text-sm text-body leading-relaxed">{d.about.governanceBoardLead}</p>
+                <p class="mt-4 text-xs text-muted label-upper">{d.about.governanceBoardPlaceholder}</p>
+              </div>
+              <div class="border-l border-hairline-strong pl-6">
+                <h3 class="text-xl font-bold text-ink">{d.about.governanceTeamTitle}</h3>
+                <p class="mt-3 text-sm text-body leading-relaxed">{d.about.governanceTeamLead}</p>
+                <p class="mt-4 text-xs text-muted label-upper">{d.about.governanceTeamPlaceholder}</p>
+              </div>
+            </div>
+          </article>
+        </div>
       </div>
     </Container>
   </Section>

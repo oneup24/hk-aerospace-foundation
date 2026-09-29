@@ -84,6 +84,47 @@
   .prose-cn li {
     @apply leading-relaxed;
   }
+
+  /* CSS-only tabs (radio button pattern, SEO-friendly, no JS) */
+  .tabs {
+    @apply grid gap-8 md:gap-12 md:grid-cols-[220px_1fr];
+  }
+
+  .tabs__list {
+    @apply flex md:flex-col gap-1 border-b md:border-b-0 md:border-r border-hairline;
+  }
+
+  .tabs__tab {
+    @apply block text-left px-4 py-3 text-sm label-upper border-b-2 md:border-b-0 md:border-l-2 border-transparent text-body-strong cursor-pointer transition-colors select-none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tabs__tab:hover {
+    @apply text-gold;
+  }
+
+  .tabs__radio:checked + .tabs__tab {
+    @apply text-gold border-gold;
+  }
+
+  .tabs__radio:focus-visible + .tabs__tab {
+    @apply outline outline-2 outline-gold outline-offset-2;
+  }
+
+  .tabs__panel {
+    @apply hidden;
+  }
+
+  .tabs__radio--1:checked ~ .tabs__panels .tabs__panel--1,
+  .tabs__radio--2:checked ~ .tabs__panels .tabs__panel--2,
+  .tabs__radio--3:checked ~ .tabs__panels .tabs__panel--3,
+  .tabs__radio--4:checked ~ .tabs__panels .tabs__panel--4 {
+    @apply block;
+  }
+
+  .tabs__radio {
+    @apply absolute opacity-0 pointer-events-none w-px h-px;
+  }
 }
 
 @layer utilities {
