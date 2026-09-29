@@ -9,11 +9,11 @@ export interface Props {
 const { lang } = Astro.props;
 const d = dict(lang);
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 
 const slides = [
   {
-    src: `${base}/img/Hero%20Banner/hero-02.jpeg`,
+    src: `${base}img/events/hero-02.jpeg`,
     eyebrow: lang === 'en' ? 'Event Highlight' : lang === 'zh' ? '活動精華' : '活動精華',
     title:
       lang === 'en'
@@ -29,7 +29,7 @@ const slides = [
           : '航天人才發展慈善基金會創會成員與支持者於首屆交流酒會合影。',
   },
   {
-    src: `${base}/img/Hero%20Banner/hero-03.jpeg`,
+    src: `${base}img/events/hero-03.jpeg`,
     eyebrow: lang === 'en' ? 'Founding Moment' : lang === 'zh' ? '成立典禮' : '成立典禮',
     title:
       lang === 'en'
@@ -45,15 +45,15 @@ const slides = [
           : '由顧問、學者與學生見證，共同開啟香港航天下一個十年。',
   },
   {
-    src: null,
-    eyebrow: lang === 'en' ? 'Coming Soon' : '即將推出',
-    title: lang === 'en' ? 'Your Event Could Be Here' : '你的活動可以在這裡',
+    src: `${base}img/events/hero-02.jpeg`,
+    eyebrow: lang === 'en' ? 'Community' : '社群',
+    title: lang === 'en' ? 'Building Together' : '同行共建',
     caption:
       lang === 'en'
-        ? 'Send us your group photo from a HKATA-related event and we will feature it on the homepage.'
+        ? 'Every conversation brings us closer to a Hong Kong aerospace community that thrives across generations.'
         : lang === 'zh'
-          ? '將活動團體照寄給我們，將於主頁精華位置展示。'
-          : '將活動團體照寄給我們，將於主頁精華位置展示。',
+          ? '每一次對話，都讓香港航天社群更近一步。'
+          : '每一次對話，都讓香港航天社群更近一步。',
   },
 ];
 ---
