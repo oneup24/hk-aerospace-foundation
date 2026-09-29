@@ -57,6 +57,7 @@ const year = new Date().getFullYear();
       <p>© {year} {d.site.name}. {d.common.copyright}.</p>
       <ul class="flex gap-6">
         <li><span class="text-muted">{d.common.terms} · {d.common.privacy}</span></li>
+        <li><a class="hover:text-gold" href={`${import.meta.env.BASE_URL}admin/`}>CMS</a></li>
       </ul>
     </div>
   </div>

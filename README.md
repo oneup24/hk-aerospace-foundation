@@ -73,37 +73,43 @@ src/
 
 ## Editing content
 
-### Add a news article
+### Option A: Web Dashboard (Decap CMS, recommended)
 
-Create 3 markdown files (繁 / 簡 / EN), one per language folder:
+The site includes **Decap CMS** at `https://oneup24.github.io/hk-aerospace-foundation/admin/`.
 
-```
-src/content/news/hk/my-new-post.md
-src/content/news/zh/my-new-post.md
-src/content/news/en/my-new-post.md
-```
+Features:
+- Browser-based editor (no terminal, no git commands)
+- Auto-commits markdown changes to GitHub
+- GitHub Action auto-rebuilds & deploys after each commit
+- Markdown editor with live preview, image upload
 
-Frontmatter:
+**To enable GitHub auth (one-time setup):**
 
-```markdown
----
-title: 我的新文章標題
-excerpt: 簡短摘要，會顯示在列表卡片（最多 ~120 字）。
-category: 政策解讀            # 政策解讀 / 趨勢分析 / 深度分析
-date: 2026-09-30
-author: HATDF 編輯部          # optional
-readingMinutes: 4              # optional, auto-calculated if omitted
-keywords:                       # optional, for SEO
-  - 香港航天人才
-  - 航天政策
----
+1. Register an OAuth App: https://github.com/settings/applications/new
+   - Application name: `HATDF CMS`
+   - Homepage URL: `https://oneup24.github.io/hk-aerospace-foundation/`
+   - Authorization callback URL: `https://api.netlify.com/auth/done`
+2. Copy the **Client ID** and generate a **Client Secret**
+3. Edit `public/admin/config.yml`:
+   ```yaml
+   backend:
+     name: github
+     repo: oneup24/hk-aerospace-foundation
+     branch: main
+     base_url: https://api.netlify.com
+     auth_endpoint: auth/done
+     auth_type: github # ← add this
+     # Then add below:
+     # github_app_id: YOUR_APP_ID
+     # Or for OAuth App:
+     # open_authoring: true
+   ```
+4. Netlify's free OAuth proxy handles the token exchange — no separate server needed
+5. Visit `/admin/` → click "Login with GitHub" → authorize
 
-文章內文（Markdown）...
-```
+### Option B: Direct file edit
 
-> **Tip:** YAML keys with colons or apostrophes must be quoted:
-> `title: "Title with: a colon"`
-> `title: 'Title with apostrophe'`
+Edit `src/content/news/{hk,zh,en}/*.md` directly, then `git push`.
 
 ## Editing UI strings
 
