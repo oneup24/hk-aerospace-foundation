@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Block admin area from all crawlers
+Disallow: /admin/
+Disallow: /admin
+
+# Reference: https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag

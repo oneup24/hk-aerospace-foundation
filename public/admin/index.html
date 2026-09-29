@@ -1,12 +1,672 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex" />
-    <title>HATDF Content Manager</title>
-  </head>
-  <body>
-    <script src="https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js"></script>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="referrer" content="no-referrer" />
+  <title>HATDF Dashboard</title>
+  <script src="https://unpkg.com/easymde@2.18.0/dist/easymde.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/easymde@2.18.0/dist/easymde.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <style>
+    :root {
+      --bg: #f9fafb;
+      --card: #ffffff;
+      --ink: #0a1f44;
+      --body: #4b5563;
+      --muted: #9ca3af;
+      --hairline: #e5e7eb;
+      --hairline-strong: #d1d5db;
+      --gold: #b8893e;
+      --gold-light: #d4a24c;
+      --danger: #c81f11;
+      --success: #0a8c2e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+    body { line-height: 1.55; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    .gate {
+      position: fixed; inset: 0; background: var(--ink); color: white;
+      display: grid; place-items: center; padding: 24px; z-index: 9999;
+    }
+    .gate__card {
+      background: white; color: var(--ink); padding: 40px; max-width: 420px; width: 100%;
+      border-top: 4px solid var(--gold);
+    }
+    .gate__title { font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .gate__h { font-size: 24px; font-weight: 700; margin-bottom: 24px; }
+    .gate__input {
+      width: 100%; padding: 12px 14px; font-size: 15px;
+      border: 1px solid var(--hairline-strong); background: var(--bg); color: var(--ink);
+      margin-bottom: 16px; font-family: inherit;
+    }
+    .gate__input:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+    .gate__btn {
+      width: 100%; padding: 14px; background: var(--ink); color: white;
+      border: 0; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; font-size: 12px;
+      cursor: pointer;
+    }
+    .gate__btn:hover { background: #050e22; }
+    .gate__err { color: var(--danger); font-size: 13px; margin-bottom: 12px; }
+    .gate__hint { color: var(--muted); font-size: 12px; margin-top: 16px; line-height: 1.6; }
+
+    .header {
+      background: white; border-bottom: 1px solid var(--hairline);
+      padding: 16px 0; margin-bottom: 32px;
+    }
+    .header__inner { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .header__brand { display: flex; align-items: center; gap: 12px; }
+    .header__logo { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
+    .header__title { font-size: 15px; font-weight: 700; }
+    .header__actions { display: flex; gap: 12px; align-items: center; font-size: 13px; color: var(--body); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0 18px; height: 44px; font-weight: 700; font-size: 12px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      border: 1px solid var(--ink); background: var(--ink); color: white;
+      cursor: pointer; font-family: inherit; text-decoration: none;
+    }
+    .btn:hover { background: #050e22; }
+    .btn--gold { background: var(--gold); border-color: var(--gold); color: white; }
+    .btn--gold:hover { background: var(--gold-light); border-color: var(--gold-light); }
+    .btn--ghost { background: transparent; color: var(--ink); }
+    .btn--ghost:hover { background: var(--bg); }
+    .btn--danger { background: transparent; color: var(--danger); border-color: var(--hairline-strong); }
+    .btn--danger:hover { background: #fef2f2; border-color: var(--danger); }
+    .btn--sm { height: 32px; padding: 0 12px; font-size: 11px; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .grid { display: grid; gap: 24px; }
+    .grid--main { grid-template-columns: 1fr; }
+    @media (min-width: 900px) { .grid--main { grid-template-columns: 1.4fr 1fr; } }
+
+    .card {
+      background: var(--card); border: 1px solid var(--hairline); padding: 24px;
+    }
+    .card__h {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 16px;
+    }
+
+    .field { margin-bottom: 18px; }
+    .field__label {
+      display: block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--ink); margin-bottom: 6px;
+    }
+    .field__input, .field__select, .field__textarea {
+      width: 100%; padding: 10px 12px; font-size: 14px; font-family: inherit;
+      border: 1px solid var(--hairline-strong); background: var(--card); color: var(--ink);
+    }
+    .field__input:focus, .field__select:focus, .field__textarea:focus {
+      outline: 2px solid var(--gold); outline-offset: -1px;
+    }
+    .field__textarea { min-height: 80px; resize: vertical; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    .field__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .editor-toolbar { border: 1px solid var(--hairline-strong); border-bottom: 0; }
+    .editor-toolbar + .CodeMirror { border: 1px solid var(--hairline-strong); min-height: 320px; }
+    .CodeMirror { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+
+    .list { display: flex; flex-direction: column; gap: 8px; max-height: 480px; overflow-y: auto; }
+    .list__item {
+      padding: 12px; border: 1px solid var(--hairline); background: white;
+      cursor: pointer; transition: border-color 0.15s;
+    }
+    .list__item:hover { border-color: var(--gold); }
+    .list__item--active { border-color: var(--gold); background: #fffbeb; }
+    .list__title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 4px; line-height: 1.3; }
+    .list__meta { font-size: 11px; color: var(--muted); letter-spacing: 0.5px; }
+    .list__cat { display: inline-block; background: var(--gold); color: white; padding: 2px 6px; font-size: 10px; letter-spacing: 0.5px; margin-right: 8px; }
+
+    .status {
+      padding: 12px 16px; margin-bottom: 20px; font-size: 13px;
+      border-left: 3px solid; display: flex; align-items: center; gap: 10px;
+    }
+    .status--ok { background: #f0fdf4; border-color: var(--success); color: #14532d; }
+    .status--err { background: #fef2f2; border-color: var(--danger); color: #7f1d1d; }
+    .status--info { background: #f0f9ff; border-color: #0369a1; color: #0c4a6e; }
+
+    .preview {
+      padding: 16px; border: 1px solid var(--hairline); background: white;
+      font-size: 14px; line-height: 1.7; max-height: 400px; overflow-y: auto;
+    }
+    .preview h2 { font-size: 18px; margin: 16px 0 8px; color: var(--ink); }
+    .preview h3 { font-size: 16px; margin: 14px 0 6px; color: var(--ink); }
+    .preview p { margin-bottom: 12px; color: var(--body); }
+    .preview ul, .preview ol { margin: 12px 0 12px 24px; color: var(--body); }
+    .preview li { margin-bottom: 4px; }
+    .preview a { color: var(--gold); }
+    .preview code { background: var(--bg); padding: 2px 6px; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+    .preview blockquote { border-left: 3px solid var(--gold); padding-left: 12px; margin: 12px 0; color: var(--body); font-style: italic; }
+    .preview strong { color: var(--ink); }
+
+    .modal {
+      position: fixed; inset: 0; background: rgba(10, 31, 68, 0.85); z-index: 10000;
+      display: none; align-items: center; justify-content: center; padding: 24px;
+    }
+    .modal--open { display: flex; }
+    .modal__card {
+      background: white; padding: 32px; max-width: 480px; width: 100%;
+      border-top: 4px solid var(--gold);
+    }
+    .modal__h { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .modal__title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .modal__sub { font-size: 13px; color: var(--body); margin-bottom: 20px; line-height: 1.5; }
+
+    .lang-tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+    .lang-tab {
+      padding: 6px 14px; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; border: 1px solid var(--hairline-strong); background: white;
+      cursor: pointer; color: var(--body);
+    }
+    .lang-tab--active { background: var(--ink); color: white; border-color: var(--ink); }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Password Gate -->
+  <div id="gate" class="gate">
+    <div class="gate__card">
+      <p class="gate__title">HATDF · Restricted</p>
+      <h1 class="gate__h">Dashboard Access</h1>
+      <div id="gateErr" class="gate__err hidden">Incorrect password.</div>
+      <input id="gateInput" class="gate__input" type="password" placeholder="Dashboard password" autocomplete="off" />
+      <button id="gateBtn" class="gate__btn">Continue</button>
+      <p class="gate__hint">
+        This page is hidden from public navigation and blocked from search engines.
+        Access requires a password plus a GitHub Personal Access Token.
+      </p>
+    </div>
+  </div>
+
+  <!-- Settings Modal (GitHub PAT) -->
+  <div id="settingsModal" class="modal">
+    <div class="modal__card">
+      <p class="modal__h">Settings</p>
+      <h2 class="modal__title">GitHub Personal Access Token</h2>
+      <p class="modal__sub">
+        Required to publish articles. Token is stored only in this browser's localStorage and never sent anywhere except github.com.<br><br>
+        <strong>Setup:</strong> GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → New token → Repository access: <em>oneup24/hk-aerospace-foundation</em> → Permissions: <em>Contents: Read &amp; Write</em>
+      </p>
+      <input id="patInput" class="field__input" type="password" placeholder="github_pat_xxx..." autocomplete="off" />
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <button id="patSave" class="btn btn--gold">Save</button>
+        <button id="patClear" class="btn btn--ghost">Clear Token</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="hidden">
+    <header class="header">
+      <div class="header__inner">
+        <div class="header__brand">
+          <span class="header__logo">HATDF</span>
+          <span class="header__title">Dashboard</span>
+        </div>
+        <div class="header__actions">
+          <span id="userLabel"></span>
+          <button id="settingsBtn" class="btn btn--ghost btn--sm">Settings</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div id="status" class="hidden"></div>
+
+      <div class="grid grid--main">
+        <!-- Editor -->
+        <div class="card">
+          <p class="card__h">Article Editor</p>
+
+          <div class="lang-tabs">
+            <button class="lang-tab lang-tab--active" data-lang="hk">繁體</button>
+            <button class="lang-tab" data-lang="zh">简体</button>
+            <button class="lang-tab" data-lang="en">English</button>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="title">Title</label>
+            <input id="title" class="field__input" type="text" placeholder="文章標題" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="excerpt">Excerpt (max ~120 chars)</label>
+            <input id="excerpt" class="field__input" type="text" placeholder="一句話總結" />
+          </div>
+
+          <div class="field__row">
+            <div class="field">
+              <label class="field__label" for="category">Category</label>
+              <select id="category" class="field__select">
+                <option value="政策解讀">政策解讀</option>
+                <option value="趨勢分析">趨勢分析</option>
+                <option value="深度分析">深度分析</option>
+                <option value="新聞公布">新聞公布</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label" for="date">Date</label>
+              <input id="date" class="field__input" type="date" />
+            </div>
+          </div>
+
+          <div class="field__row">
+            <div class="field">
+              <label class="field__label" for="author">Author</label>
+              <input id="author" class="field__input" type="text" value="HATDF Editorial" />
+            </div>
+            <div class="field">
+              <label class="field__label" for="readingMinutes">Reading Time (min)</label>
+              <input id="readingMinutes" class="field__input" type="number" min="1" max="30" value="4" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="keywords">SEO Keywords (comma-separated)</label>
+            <input id="keywords" class="field__input" type="text" placeholder="香港航天人才, 航天政策" />
+          </div>
+
+          <div class="field">
+            <label class="field__label">Body (Markdown)</label>
+            <textarea id="body"></textarea>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button id="publishBtn" class="btn btn--gold">Publish to GitHub</button>
+            <button id="previewBtn" class="btn btn--ghost">Preview</button>
+            <button id="clearBtn" class="btn btn--danger">Clear Form</button>
+          </div>
+        </div>
+
+        <!-- Right column: existing articles + preview -->
+        <div>
+          <div class="card" style="margin-bottom: 24px;">
+            <p class="card__h">Existing Articles</p>
+            <div class="lang-tabs" style="margin-bottom: 12px;">
+              <button class="lang-tab lang-tab--active" data-list-lang="hk">繁體</button>
+              <button class="lang-tab" data-list-lang="zh">简体</button>
+              <button class="lang-tab" data-list-lang="en">English</button>
+            </div>
+            <div id="articleList" class="list"><p style="color: var(--muted); font-size: 13px;">Loading…</p></div>
+          </div>
+
+          <div id="previewCard" class="card hidden">
+            <p class="card__h">Preview</p>
+            <div id="previewContent" class="preview"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const REPO = 'oneup24/hk-aerospace-foundation';
+    const BRANCH = 'main';
+    const PASSWORD_HASH = 'hatdf-admin-2026';
+    const TOKEN_KEY = 'hatdf_pat';
+    const USER_KEY = 'hatdf_user';
+
+    let currentLang = 'hk';
+    let currentListLang = 'hk';
+    let currentFile = null;
+    let currentSha = null;
+    let easyMDE = null;
+
+    // ---- Password gate ----
+    const gate = document.getElementById('gate');
+    const gateInput = document.getElementById('gateInput');
+    const gateBtn = document.getElementById('gateBtn');
+    const gateErr = document.getElementById('gateErr');
+
+    gateBtn.addEventListener('click', tryUnlock);
+    gateInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryUnlock(); });
+
+    function tryUnlock() {
+      if (gateInput.value === PASSWORD_HASH) {
+        gate.classList.add('hidden');
+        showApp();
+      } else {
+        gateErr.classList.remove('hidden');
+        gateInput.value = '';
+        gateInput.focus();
+      }
+    }
+
+    // ---- Settings (PAT) ----
+    const settingsModal = document.getElementById('settingsModal');
+    const patInput = document.getElementById('patInput');
+    const patSave = document.getElementById('patSave');
+    const patClear = document.getElementById('patClear');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const userLabel = document.getElementById('userLabel');
+
+    settingsBtn.addEventListener('click', () => {
+      patInput.value = localStorage.getItem(TOKEN_KEY) || '';
+      settingsModal.classList.add('modal--open');
+    });
+    patSave.addEventListener('click', () => {
+      localStorage.setItem(TOKEN_KEY, patInput.value.trim());
+      settingsModal.classList.remove('modal--open');
+      showStatus('ok', 'Token saved.');
+      loadArticleList();
+    });
+    patClear.addEventListener('click', () => {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      patInput.value = '';
+      settingsModal.classList.remove('modal--open');
+      showStatus('info', 'Token cleared.');
+    });
+
+    function getToken() { return localStorage.getItem(TOKEN_KEY) || ''; }
+
+    // ---- Status messages ----
+    const statusEl = document.getElementById('status');
+    function showStatus(kind, msg) {
+      statusEl.className = `status status--${kind}`;
+      statusEl.textContent = msg;
+      statusEl.classList.remove('hidden');
+      if (kind === 'ok' || kind === 'info') {
+        setTimeout(() => statusEl.classList.add('hidden'), 5000);
+      }
+    }
+
+    // ---- Markdown editor ----
+    function initEditor() {
+      easyMDE = new EasyMDE({
+        element: document.getElementById('body'),
+        spellChecker: false,
+        placeholder: 'Write your article in markdown. Use the toolbar for formatting.',
+        status: ['lines', 'words', 'cursor'],
+        minHeight: '320px',
+        toolbar: [
+          'bold', 'italic', 'heading', '|',
+          'quote', 'unordered-list', 'ordered-list', '|',
+          'link', 'image', 'table', 'code', 'horizontal-rule', '|',
+          'preview', 'side-by-side', 'fullscreen', '|',
+          'guide'
+        ],
+      });
+    }
+
+    // ---- Form fields ----
+    function setToday() {
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('date').value = today;
+    }
+
+    function buildFrontmatter() {
+      const title = document.getElementById('title').value.trim();
+      const excerpt = document.getElementById('excerpt').value.trim();
+      const category = document.getElementById('category').value;
+      const date = document.getElementById('date').value;
+      const author = document.getElementById('author').value.trim();
+      const readingMinutes = parseInt(document.getElementById('readingMinutes').value, 10) || 4;
+      const keywordsRaw = document.getElementById('keywords').value.trim();
+      const keywords = keywordsRaw ? keywordsRaw.split(',').map(k => k.trim()).filter(Boolean) : [];
+
+      const quoteIfColon = (s) => /[:'"]/.test(s) ? `"${s.replace(/"/g, '\\"')}"` : s;
+
+      let fm = `---\n`;
+      fm += `title: ${quoteIfColon(title)}\n`;
+      fm += `excerpt: ${quoteIfColon(excerpt)}\n`;
+      fm += `category: ${category}\n`;
+      fm += `date: ${date}\n`;
+      if (author) fm += `author: ${quoteIfColon(author)}\n`;
+      fm += `readingMinutes: ${readingMinutes}\n`;
+      if (keywords.length) {
+        fm += `keywords:\n`;
+        keywords.forEach(k => { fm += `  - ${k}\n`; });
+      }
+      fm += `---\n\n`;
+      return fm;
+    }
+
+    function buildFullDoc() {
+      return buildFrontmatter() + (easyMDE ? easyMDE.value() : document.getElementById('body').value);
+    }
+
+    function fillForm(meta, body, sha) {
+      document.getElementById('title').value = meta.title || '';
+      document.getElementById('excerpt').value = meta.excerpt || '';
+      document.getElementById('category').value = meta.category || '政策解讀';
+      document.getElementById('date').value = meta.date ? meta.date.slice(0, 10) : new Date().toISOString().slice(0, 10);
+      document.getElementById('author').value = meta.author || 'HATDF Editorial';
+      document.getElementById('readingMinutes').value = meta.readingMinutes || 4;
+      document.getElementById('keywords').value = (meta.keywords || []).join(', ');
+      if (easyMDE) easyMDE.value(body);
+      currentSha = sha || null;
+    }
+
+    function clearForm() {
+      fillForm({}, '', null);
+      setToday();
+      currentFile = null;
+    }
+
+    // ---- GitHub API ----
+    async function gh(path, opts = {}) {
+      const token = getToken();
+      if (!token) throw new Error('No GitHub token. Click Settings to add.');
+      const res = await fetch(`https://api.github.com${path}`, {
+        ...opts,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+          ...(opts.headers || {}),
+        },
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `HTTP ${res.status}`);
+      }
+      return res.json();
+    }
+
+    async function loadArticleList() {
+      const token = getToken();
+      if (!token) {
+        document.getElementById('articleList').innerHTML = '<p style="color: var(--muted); font-size: 13px;">Add a GitHub token in Settings to load articles.</p>';
+        return;
+      }
+      try {
+        const data = await gh(`/repos/${REPO}/contents/src/content/news/${currentListLang}`);
+        const items = data
+          .filter(f => f.name.endsWith('.md'))
+          .sort((a, b) => b.name.localeCompare(a.name));
+        const html = items.map(f => {
+          const slug = f.name.replace(/\.md$/, '');
+          return `<div class="list__item" data-slug="${slug}" data-sha="${f.sha}">
+            <div class="list__title">${escapeHtml(slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()))}</div>
+            <div class="list__meta"><span class="list__cat">${currentListLang.toUpperCase()}</span>${escapeHtml(slug)}</div>
+          </div>`;
+        }).join('');
+        document.getElementById('articleList').innerHTML = html || '<p style="color: var(--muted); font-size: 13px;">No articles yet.</p>';
+        document.querySelectorAll('.list__item').forEach(el => {
+          el.addEventListener('click', () => loadArticle(el.dataset.slug, el.dataset.sha));
+        });
+      } catch (e) {
+        document.getElementById('articleList').innerHTML = `<p style="color: var(--danger); font-size: 13px;">Error: ${escapeHtml(e.message)}</p>`;
+      }
+    }
+
+    async function loadArticle(slug, sha) {
+      try {
+        const data = await gh(`/repos/${REPO}/contents/src/content/news/${currentListLang}/${slug}.md`);
+        const content = atob(data.content.replace(/\n/g, ''));
+        const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+        if (!fmMatch) throw new Error('Invalid frontmatter format');
+        const meta = parseFrontmatter(fmMatch[1]);
+        const body = fmMatch[2];
+        fillForm(meta, body, data.sha);
+        currentFile = slug;
+        currentSha = sha;
+        document.querySelectorAll('.list__item').forEach(el => el.classList.toggle('list__item--active', el.dataset.slug === slug));
+        showStatus('ok', `Loaded "${slug}".`);
+      } catch (e) {
+        showStatus('err', `Load failed: ${e.message}`);
+      }
+    }
+
+    function parseFrontmatter(text) {
+      const out = {};
+      let currentKey = null;
+      text.split('\n').forEach(line => {
+        if (/^(\w+):\s*(.*)$/.test(line)) {
+          const m = line.match(/^(\w+):\s*(.*)$/);
+          out[m[1]] = m[2].replace(/^["']|["']$/g, '').trim();
+          currentKey = m[1];
+        } else if (/^\s+-\s+(.+)$/.test(line) && currentKey) {
+          if (!Array.isArray(out[currentKey])) out[currentKey] = [];
+          out[currentKey].push(line.replace(/^\s+-\s+/, '').trim());
+        }
+      });
+      return out;
+    }
+
+    async function publish() {
+      const title = document.getElementById('title').value.trim();
+      const date = document.getElementById('date').value;
+      if (!title || !date) {
+        showStatus('err', 'Title and date are required.');
+        return;
+      }
+
+      const slug = (currentFile || slugify(title));
+      const path = `src/content/news/${currentLang}/${slug}.md`;
+      const content = btoa(unescape(encodeURIComponent(buildFullDoc())));
+      const message = currentSha
+        ? `cms: update article "${slug}"`
+        : `cms: create article "${slug}"`;
+
+      const publishBtn = document.getElementById('publishBtn');
+      publishBtn.disabled = true;
+      publishBtn.textContent = 'Publishing…';
+
+      try {
+        const body = {
+          message,
+          content,
+          branch: BRANCH,
+        };
+        if (currentSha) body.sha = currentSha;
+
+        const result = await gh(`/repos/${REPO}/contents/${path}`, {
+          method: 'PUT',
+          body: JSON.stringify(body),
+        });
+
+        showStatus('ok', `Published! Commit ${result.commit.sha.slice(0, 7)}. Site rebuilds in ~1 min.`);
+        currentSha = result.content.sha;
+        currentFile = slug;
+        loadArticleList();
+      } catch (e) {
+        showStatus('err', `Publish failed: ${e.message}`);
+      } finally {
+        publishBtn.disabled = false;
+        publishBtn.textContent = 'Publish to GitHub';
+      }
+    }
+
+    function slugify(s) {
+      return s.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 60);
+    }
+
+    function escapeHtml(s) {
+      return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    // ---- Language tabs ----
+    document.querySelectorAll('.lang-tabs').forEach(group => {
+      group.addEventListener('click', (e) => {
+        const tab = e.target.closest('.lang-tab');
+        if (!tab) return;
+        const lang = tab.dataset.lang || tab.dataset.listLang;
+        const isList = !!tab.dataset.listLang;
+        group.querySelectorAll('.lang-tab').forEach(t => t.classList.toggle('lang-tab--active', t === tab));
+        if (isList) {
+          currentListLang = lang;
+          loadArticleList();
+        } else {
+          currentLang = lang;
+        }
+      });
+    });
+
+    // ---- Buttons ----
+    document.getElementById('publishBtn').addEventListener('click', publish);
+    document.getElementById('previewBtn').addEventListener('click', () => {
+      const card = document.getElementById('previewCard');
+      const content = document.getElementById('previewContent');
+      card.classList.remove('hidden');
+      const md = easyMDE ? easyMDE.value() : '';
+      content.innerHTML = renderMarkdown(md);
+    });
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if (confirm('Clear all form fields?')) clearForm();
+    });
+
+    // ---- Minimal markdown renderer (headings, bold, italic, links, lists, blockquote, code, hr) ----
+    function renderMarkdown(md) {
+      let html = escapeHtml(md);
+      // Code blocks
+      html = html.replace(/```([\s\S]*?)```/g, (_, code) => `<pre><code>${code.trim()}</code></pre>`);
+      // Inline code
+      html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+      // Headings
+      html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+      html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+      html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+      // Blockquote
+      html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+      // Bold
+      html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      // Italic
+      html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+      // Links
+      html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      // Lists
+      html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+      html = html.replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
+      // Paragraphs (split on double newline)
+      html = html.split(/\n\n+/).map(block => {
+        if (/^<(h\d|ul|ol|pre|blockquote)/.test(block.trim())) return block;
+        if (!block.trim()) return '';
+        return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+      }).join('\n');
+      // Horizontal rule
+      html = html.replace(/^---$/gm, '<hr>');
+      return html;
+    }
+
+    // ---- Show app ----
+    function showApp() {
+      document.getElementById('app').classList.remove('hidden');
+      setToday();
+      initEditor();
+      const token = getToken();
+      if (token) {
+        loadArticleList();
+      } else {
+        setTimeout(() => settingsModal.classList.add('modal--open'), 200);
+      }
+      userLabel.textContent = `Lang: ${currentLang} · ${token ? 'Token ✓' : 'No token'}`;
+    }
+  </script>
+</body>
 </html>
