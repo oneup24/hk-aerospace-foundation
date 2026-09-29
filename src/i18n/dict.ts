@@ -70,6 +70,15 @@ export type Dict = {
     ctaBody: string;
     ctaPrimary: string;
     ctaSecondary: string;
+    slider1Eyebrow: string;
+    slider1Title: string;
+    slider1Caption: string;
+    slider2Eyebrow: string;
+    slider2Title: string;
+    slider2Caption: string;
+    slider3Eyebrow: string;
+    slider3Title: string;
+    slider3Caption: string;
   };
   about: {
     pageEyebrow: string;

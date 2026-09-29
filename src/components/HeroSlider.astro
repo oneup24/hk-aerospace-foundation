@@ -15,46 +15,21 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
 const slides = [
   {
     src: `${base}img/events/hero-02.jpeg`,
-    eyebrow: lang === 'en' ? 'Event Highlight' : lang === 'zh' ? '活動精華' : '活動精華',
-    title:
-      lang === 'en'
-        ? 'Aerospace Talent Networking Reception 2026'
-        : lang === 'zh'
-          ? '航天人才交流酒會 2026'
-          : '航天人才交流酒會 2026',
-    caption:
-      lang === 'en'
-        ? 'Founding members and supporters of HATDF at the inaugural reception.'
-        : lang === 'zh'
-          ? '航天人才發展慈善基金會創會成員與支持者於首屆交流酒會合影。'
-          : '航天人才發展慈善基金會創會成員與支持者於首屆交流酒會合影。',
+    eyebrow: d.home.slider1Eyebrow,
+    title: d.home.slider1Title,
+    caption: d.home.slider1Caption,
   },
   {
     src: `${base}img/events/hero-03.jpeg`,
-    eyebrow: lang === 'en' ? 'Founding Moment' : lang === 'zh' ? '成立典禮' : '成立典禮',
-    title:
-      lang === 'en'
-        ? 'Foundation Founding Ceremony'
-        : lang === 'zh'
-          ? '基金會成立典禮'
-          : '基金會成立典禮',
-    caption:
-      lang === 'en'
-        ? 'Witnessed by advisors, scholars and students who will shape the next decade of Hong Kong aerospace.'
-        : lang === 'zh'
-          ? '由顧問、學者與學生見證，共同開啟香港航天下一個十年。'
-          : '由顧問、學者與學生見證，共同開啟香港航天下一個十年。',
+    eyebrow: d.home.slider2Eyebrow,
+    title: d.home.slider2Title,
+    caption: d.home.slider2Caption,
   },
   {
     src: `${base}img/events/hero-02.jpeg`,
-    eyebrow: lang === 'en' ? 'Community' : '社群',
-    title: lang === 'en' ? 'Building Together' : '同行共建',
-    caption:
-      lang === 'en'
-        ? 'Every conversation brings us closer to a Hong Kong aerospace community that thrives across generations.'
-        : lang === 'zh'
-          ? '每一次對話，都讓香港航天社群更近一步。'
-          : '每一次對話，都讓香港航天社群更近一步。',
+    eyebrow: d.home.slider3Eyebrow,
+    title: d.home.slider3Title,
+    caption: d.home.slider3Caption,
   },
 ];
 ---
