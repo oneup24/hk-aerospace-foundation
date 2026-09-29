@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #0A0F1F;
+    --color-fg: #FFFFFF;
+    --color-body: #BBBBBB;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-canvas text-body font-sans font-normal;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-ink font-bold tracking-tight;
+  }
+
+  a {
+    @apply transition-colors;
+  }
+
+  ::selection {
+    @apply bg-gold text-canvas;
+  }
+
+  *:focus-visible {
+    outline: 2px solid #D4A24C;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .skip-link {
+    @apply absolute left-2 top-2 -translate-y-20 focus:translate-y-0 bg-gold text-canvas px-4 py-2 font-bold z-50 transition;
+  }
+
+  .container-x {
+    @apply max-w-container mx-auto px-5 md:px-8 lg:px-12;
+  }
+
+  .label-upper {
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center px-8 h-12 font-bold uppercase tracking-[1.5px] text-sm border transition;
+    border-radius: 0;
+  }
+
+  .btn-primary {
+    @apply btn bg-canvas text-ink border-ink hover:bg-ink hover:text-canvas;
+  }
+
+  .btn-primary-outline {
+    @apply btn bg-transparent text-ink border-ink hover:bg-ink hover:text-canvas;
+  }
+
+  .btn-gold {
+    @apply btn bg-gold text-navy border-gold hover:bg-gold-light hover:border-gold-light;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-ink border-hairline hover:border-ink hover:bg-surface;
+  }
+
+  .text-link-upper {
+    @apply label-upper text-ink hover:text-gold inline-flex items-center gap-2;
+  }
+
+  .prose-cn p,
+  .prose-cn li {
+    @apply leading-relaxed;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

@@ -1,0 +1,15 @@
+---
+export interface Props {
+  number: string;
+  label: string;
+  suffix?: string;
+}
+const { number, label, suffix } = Astro.props;
+---
+<div class="border-l border-hairline-strong pl-6 py-2">
+  <div class="flex items-baseline gap-1">
+    <span class="text-5xl md:text-display-md font-bold text-ink leading-none tracking-tight">{number}</span>
+    {suffix && <span class="text-base md:text-xl text-gold font-bold">{suffix}</span>}
+  </div>
+  <div class="mt-4 label-upper text-[11px] text-muted leading-snug">{label}</div>
+</div>

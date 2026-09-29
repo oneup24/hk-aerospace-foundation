@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import Section from '../../../components/Section.astro';
+import { dict } from '../../../i18n/dict';
+
+export async function getStaticPaths() {
+  const langs = ['hk', 'zh', 'en'] as const;
+  const paths: Array<{ params: { lang: string; slug: string }; props: { item: any; lang: typeof langs[number] } }> = [];
+  for (const lang of langs) {
+    const items = await getCollection('news', ({ id }) => id.startsWith(`${lang}/`));
+    for (const item of items) {
+      paths.push({
+        params: { lang, slug: item.slug.replace(new RegExp(`^${lang}/`), '') },
+        props: { item, lang },
+      });
+    }
+  }
+  return paths;
+}
+
+const { item, lang } = Astro.props as { item: any; lang: 'hk' | 'zh' | 'en' };
+const d = dict(lang);
+const { Content } = await item.render();
+const dateStr = item.data.date.toLocaleDateString(lang === 'en' ? 'en-GB' : lang === 'zh' ? 'zh-CN' : 'zh-HK', {
+  year: 'numeric', month: 'long', day: 'numeric',
+});
+const minutes = item.data.readingMinutes ?? Math.max(2, Math.round(item.body.split(/\s+/).length / 250));
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: item.data.title,
+  description: item.data.excerpt,
+  datePublished: item.data.date.toISOString(),
+  dateModified: item.data.date.toISOString(),
+  inLanguage: lang === 'en' ? 'en' : lang === 'zh' ? 'zh-CN' : 'zh-HK',
+  keywords: item.data.keywords?.join(', '),
+  author: { '@type': 'Organization', name: 'Hong Kong Aerospace Talent Development Foundation' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'HATDF',
+    logo: { '@type': 'ImageObject', url: 'https://hatdf.org/logo.png' },
+  },
+};
+---
+
+<BaseLayout lang={lang} title={item.data.title} description={item.data.excerpt} jsonLd={articleJsonLd}>
+  <section class="bg-canvas border-b border-hairline">
+    <Container>
+      <div class="py-16 md:py-20 max-w-4xl">
+        <nav class="text-xs text-muted mb-8 flex items-center gap-2 label-upper" aria-label="Breadcrumb">
+          <a href={`/${lang}/`} class="hover:text-gold transition-colors">{d.nav.home}</a>
+          <span aria-hidden="true">›</span>
+          <a href={`/${lang}/news`} class="hover:text-gold transition-colors">{d.nav.news}</a>
+        </nav>
+        <span class="inline-block label-upper text-[10px] bg-gold text-navy px-3 py-1.5">{item.data.category}</span>
+        <h1 class="mt-5 text-3xl md:text-5xl font-bold text-ink leading-[1.1] tracking-tight text-balance">{item.data.title}</h1>
+        <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
+          <time datetime={item.data.date.toISOString()}>{d.common.publishedOn} {dateStr}</time>
+          <span aria-hidden="true">·</span>
+          <span>{minutes} {lang === 'en' ? 'min read' : lang === 'zh' ? '分鐘' : '分鐘閱讀'}</span>
+          {item.data.author && (<><span aria-hidden="true">·</span><span>{item.data.author}</span></>)}
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <Section pad="md">
+    <Container>
+      <article class="prose-cn max-w-3xl mx-auto text-body-strong leading-relaxed text-base md:text-lg space-y-6">
+        <Content />
+      </article>
+      <div class="max-w-3xl mx-auto mt-16 pt-8 border-t border-hairline">
+        <a href={`/${lang}/news`} class="text-link-upper text-[11px]">
+          ← {d.common.backToInsights}
+        </a>
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>

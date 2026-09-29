@@ -1,0 +1,63 @@
+---
+import { dict } from '../i18n/dict';
+import type { Lang } from '../i18n/config';
+
+export interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = dict(lang);
+const base = `/${lang}`;
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-canvas border-t border-hairline mt-24">
+  <div class="container-x py-16 grid gap-10 md:grid-cols-12">
+    <div class="md:col-span-5">
+      <div class="flex items-center gap-3 mb-5">
+        <img src="/logo.png" alt="HATDF" class="h-10 w-auto" />
+        <div class="leading-tight">
+          <span class="block text-ink label-upper text-[11px]">{d.site.short}</span>
+          <span class="block text-muted text-[11px] mt-1">{d.site.tagline}</span>
+        </div>
+      </div>
+      <p class="text-body text-sm leading-relaxed max-w-md">{d.footer.description}</p>
+      <p class="text-muted label-upper text-[11px] mt-6">{d.site.founded}</p>
+    </div>
+
+    <div class="md:col-span-3">
+      <h3 class="text-gold label-upper text-[11px] mb-5">{d.footer.explore}</h3>
+      <ul class="space-y-3 text-sm">
+        <li><a class="text-body-strong hover:text-gold transition-colors" href={`${base}/`}>{d.nav.home}</a></li>
+        <li><a class="text-body-strong hover:text-gold transition-colors" href={`${base}/about`}>{d.nav.about}</a></li>
+        <li><a class="text-body-strong hover:text-gold transition-colors" href={`${base}/news`}>{d.nav.news}</a></li>
+        <li><a class="text-body-strong hover:text-gold transition-colors" href={`${base}/contact`}>{d.nav.contact}</a></li>
+      </ul>
+    </div>
+
+    <div class="md:col-span-4">
+      <h3 class="text-gold label-upper text-[11px] mb-5">{d.footer.contact}</h3>
+      <ul class="space-y-3 text-sm">
+        <li>
+          <span class="block text-muted label-upper text-[10px] mb-1">{d.common.email}</span>
+          <a class="text-body-strong hover:text-gold transition-colors" href="mailto:info@hatdf.org.hk">info@hatdf.org.hk</a>
+        </li>
+        <li>
+          <span class="block text-muted label-upper text-[10px] mb-1">{d.common.phone}</span>
+          <span class="text-body-strong">+852 6113 0828</span>
+        </li>
+        <li>
+          <span class="block text-muted label-upper text-[10px] mb-1">{d.common.address}</span>
+          <span class="text-body-strong">{lang === 'en' ? '1/F & 2/F, 228 Electric Road, North Point, Hong Kong' : '香港北角電氣道 228 號 1 樓及 2 樓'}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-hairline">
+    <div class="container-x py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-[12px] text-muted">
+      <p>© {year} {d.site.name}. {d.common.copyright}.</p>
+      <ul class="flex gap-6">
+        <li><span class="text-muted">{d.common.terms} · {d.common.privacy}</span></li>
+      </ul>
+    </div>
+  </div>
+</footer>

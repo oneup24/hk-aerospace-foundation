@@ -1,0 +1,107 @@
+---
+import { dict } from '../i18n/dict';
+import type { Lang } from '../i18n/config';
+
+export interface Props {
+  lang: Lang;
+  current?: string;
+}
+const { lang, current = Astro.url.pathname } = Astro.props;
+const d = dict(lang);
+
+const base = `/${lang}`;
+const items = [
+  { href: `${base}/`, label: d.nav.home, key: 'home' },
+  { href: `${base}/about`, label: d.nav.about, key: 'about' },
+  { href: `${base}/news`, label: d.nav.news, key: 'news' },
+  { href: `${base}/contact`, label: d.nav.contact, key: 'contact' },
+];
+
+const isActive = (href: string) => {
+  if (href === `${base}/`) return current === `${base}/` || current === `${base}`;
+  return current === href || current.startsWith(href + '/');
+};
+---
+
+<header class="sticky top-0 z-40 bg-canvas/95 backdrop-blur border-b border-hairline">
+  <div class="container-x flex items-center h-16 gap-8">
+    <a href={`/${lang}/`} class="flex items-center gap-3 shrink-0">
+      <img src="/logo.png" alt="HATDF" class="h-9 md:h-10 w-auto" />
+      <span class="hidden md:block leading-tight">
+        <span class="block text-ink label-upper text-[11px]">{d.site.short}</span>
+      </span>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-1 ml-auto" aria-label="Primary">
+      {items.map((it) => (
+        <a
+          href={it.href}
+          aria-current={isActive(it.href) ? 'page' : undefined}
+          class:list={[
+            'px-3 py-2 text-[13px] font-medium tracking-[0.5px] uppercase hover:text-gold transition-colors',
+            isActive(it.href) ? 'text-gold' : 'text-body-strong',
+          ]}
+        >
+          {it.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="ml-auto lg:ml-2 flex items-center gap-3">
+      <details class="relative">
+        <summary class="list-none cursor-pointer px-3 py-2 text-sm font-medium border border-hairline hover:border-gold flex items-center gap-1.5 select-none label-upper text-[11px]">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
+          </svg>
+          <span>{lang === 'hk' ? '繁體' : lang === 'zh' ? '简体' : 'EN'}</span>
+        </summary>
+        <div class="absolute right-0 mt-2 bg-surface border border-hairline min-w-[160px] py-1 z-50">
+          {(['hk', 'zh', 'en'] as const).map((l) => (
+            <a
+              href={Astro.url.pathname.replace(/\/(hk|zh|en)(?=\/|$)/, `/${l}`)}
+              aria-current={l === lang ? 'true' : undefined}
+              class:list={[
+                'block px-4 py-2.5 text-sm hover:bg-surface-elevated label-upper text-[11px]',
+                l === lang ? 'text-gold' : 'text-body-strong',
+              ]}
+            >
+              {l === 'hk' ? '繁體中文' : l === 'zh' ? '简体中文' : 'English'}
+            </a>
+          ))}
+        </div>
+      </details>
+
+      <button id="mobileMenuBtn" class="lg:hidden p-2 border border-hairline" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobileMenu" hidden class="lg:hidden border-t border-hairline bg-canvas">
+    <nav class="container-x py-4 flex flex-col gap-1" aria-label="Mobile">
+      {items.map((it) => (
+        <a href={it.href} class:list={['px-3 py-3 text-sm label-upper', isActive(it.href) ? 'text-gold' : 'text-body-strong']}>{it.label}</a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mobileMenuBtn');
+  const menu = document.getElementById('mobileMenu');
+  if (btn && menu) {
+    btn.addEventListener('click', () => {
+      const open = menu.hasAttribute('hidden');
+      if (open) {
+        menu.removeAttribute('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+      } else {
+        menu.setAttribute('hidden', '');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+</script>

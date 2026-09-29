@@ -1,0 +1,157 @@
+import type { Lang } from './config';
+
+export type Dict = {
+  site: {
+    name: string;
+    short: string;
+    tagline: string;
+    founded: string;
+  };
+  nav: {
+    home: string;
+    about: string;
+    news: string;
+    contact: string;
+  };
+  common: {
+    learnMore: string;
+    readMore: string;
+    viewAll: string;
+    backTo: string;
+    publishedOn: string;
+    address: string;
+    email: string;
+    phone: string;
+    copyright: string;
+    terms: string;
+    privacy: string;
+    contactUs: string;
+    language: string;
+    skipToContent: string;
+    readInsight: string;
+    allInsights: string;
+    latestInsights: string;
+    backToInsights: string;
+    category: string;
+  };
+  home: {
+    heroEyebrow: string;
+    heroTitle: string;
+    heroSubtitle: string;
+    heroCtaPrimary: string;
+    heroCtaSecondary: string;
+    stat1Number: string;
+    stat1Label: string;
+    stat2Number: string;
+    stat2Label: string;
+    stat3Number: string;
+    stat3Label: string;
+    stat4Number: string;
+    stat4Label: string;
+    whyEyebrow: string;
+    whyTitle: string;
+    whyLead: string;
+    whyBody: string;
+    missionEyebrow: string;
+    missionTitle: string;
+    missionLead: string;
+    pillar1Title: string;
+    pillar1Desc: string;
+    pillar2Title: string;
+    pillar2Desc: string;
+    pillar3Title: string;
+    pillar3Desc: string;
+    pillar4Title: string;
+    pillar4Desc: string;
+    insightsEyebrow: string;
+    insightsTitle: string;
+    insightsLead: string;
+    ctaTitle: string;
+    ctaBody: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+  };
+  about: {
+    pageEyebrow: string;
+    pageTitle: string;
+    pageLead: string;
+    missionEyebrow: string;
+    missionTitle: string;
+    missionQuote: string;
+    whyEyebrow: string;
+    whyTitle: string;
+    whyBody: string;
+    whyNowEyebrow: string;
+    whyNowTitle: string;
+    whyNowBullets: string[];
+    whatEyebrow: string;
+    whatTitle: string;
+    whatLead: string;
+    work1Title: string;
+    work1Desc: string;
+    work2Title: string;
+    work2Desc: string;
+    work3Title: string;
+    work3Desc: string;
+    work4Title: string;
+    work4Desc: string;
+    alignEyebrow: string;
+    alignTitle: string;
+    alignLead: string;
+    alignBullet1: string;
+    alignBullet2: string;
+    alignBullet3: string;
+    alignBullet4: string;
+    gettingInvolvedEyebrow: string;
+    gettingInvolvedTitle: string;
+    gettingInvolvedBody: string;
+    gettingInvolvedCta: string;
+  };
+  news: {
+    pageEyebrow: string;
+    pageTitle: string;
+    pageLead: string;
+    emptyState: string;
+  };
+  contact: {
+    pageEyebrow: string;
+    pageTitle: string;
+    pageLead: string;
+    emailLabel: string;
+    emailValue: string;
+    addressLabel: string;
+    addressValue: string;
+    phoneLabel: string;
+    phoneValue: string;
+    hoursLabel: string;
+    hoursValue: string;
+    socialLabel: string;
+    socialLinkedIn: string;
+    socialFacebook: string;
+    socialInstagram: string;
+    formEyebrow: string;
+    formTitle: string;
+    formLead: string;
+    formNameLabel: string;
+    formEmailLabel: string;
+    formSubjectLabel: string;
+    formMessageLabel: string;
+    formSubmit: string;
+    formNote: string;
+  };
+  footer: {
+    about: string;
+    contact: string;
+    explore: string;
+    tagline: string;
+    description: string;
+  };
+};
+
+export type DictKey = keyof Dict;
+
+import { D } from './dicts';
+
+export function dict(lang: Lang): Dict {
+  return D[lang];
+}

@@ -1,0 +1,24 @@
+---
+export interface Props {
+  bg?: 'canvas' | 'surface' | 'surface-soft' | 'surface-elevated' | 'navy';
+  id?: string;
+  class?: string;
+  pad?: 'sm' | 'md' | 'lg';
+}
+const { bg = 'canvas', id, class: cls = '', pad = 'md' } = Astro.props;
+const bgClass = {
+  canvas: 'bg-canvas text-body',
+  surface: 'bg-surface text-body',
+  'surface-soft': 'bg-surface-soft text-body',
+  'surface-elevated': 'bg-surface-elevated text-body',
+  navy: 'bg-navy text-body',
+}[bg];
+const padClass = {
+  sm: 'py-12 md:py-16',
+  md: 'py-20 md:py-28',
+  lg: 'py-28 md:py-36',
+}[pad];
+---
+<section id={id} class:list={[bgClass, padClass, cls]}>
+  <slot />
+</section>

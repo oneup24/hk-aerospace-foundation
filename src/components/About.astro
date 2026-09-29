@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from './Container.astro';
+import Section from './Section.astro';
+import { dict } from '../i18n/dict';
+import type { Lang } from '../i18n/config';
+
+export interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = dict(lang);
+
+const works = [
+  { title: d.about.work1Title, desc: d.about.work1Desc, num: '01' },
+  { title: d.about.work2Title, desc: d.about.work2Desc, num: '02' },
+  { title: d.about.work3Title, desc: d.about.work3Desc, num: '03' },
+  { title: d.about.work4Title, desc: d.about.work4Desc, num: '04' },
+];
+---
+
+<BaseLayout lang={lang} title={d.about.pageTitle} description={d.about.pageLead}>
+  <section class="bg-canvas border-b border-hairline">
+    <Container>
+      <div class="py-20 md:py-28 max-w-4xl">
+        <p class="label-upper text-[11px] text-gold mb-6 flex items-center gap-3">
+          <span class="inline-block w-8 h-px bg-gold"></span>
+          {d.about.pageEyebrow}
+        </p>
+        <h1 class="text-4xl md:text-display-lg font-bold text-ink leading-[1.05] tracking-tight text-balance">
+          {d.about.pageTitle}
+        </h1>
+        <p class="mt-6 text-lg md:text-xl text-body leading-relaxed max-w-3xl">{d.about.pageLead}</p>
+      </div>
+    </Container>
+  </section>
+
+  <Section bg="navy" pad="lg">
+    <Container>
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="label-upper text-[11px] text-gold mb-6">{d.about.missionEyebrow}</p>
+        <h2 class="text-3xl md:text-display-md font-bold text-ink leading-[1.1] tracking-tight text-balance">
+          {d.about.missionTitle}
+        </h2>
+        <blockquote class="mt-10 text-xl md:text-2xl text-ink leading-relaxed font-serif max-w-3xl mx-auto text-balance">
+          “{d.about.missionQuote}”
+        </blockquote>
+      </div>
+    </Container>
+  </Section>
+
+  <Section pad="lg">
+    <Container>
+      <div class="grid md:grid-cols-12 gap-10 md:gap-16">
+        <div class="md:col-span-4">
+          <p class="label-upper text-[11px] text-gold mb-5">{d.about.whyEyebrow}</p>
+          <h2 class="text-3xl md:text-display-sm font-bold text-ink leading-[1.1] tracking-tight">
+            {d.about.whyTitle}
+          </h2>
+        </div>
+        <div class="md:col-span-8">
+          <p class="text-lg text-body-strong leading-relaxed">{d.about.whyBody}</p>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <Section bg="surface" pad="lg">
+    <Container>
+      <div class="grid md:grid-cols-12 gap-10 md:gap-16">
+        <div class="md:col-span-4">
+          <p class="label-upper text-[11px] text-gold mb-5">{d.about.whyNowEyebrow}</p>
+          <h2 class="text-3xl md:text-display-sm font-bold text-ink leading-[1.1] tracking-tight">
+            {d.about.whyNowTitle}
+          </h2>
+        </div>
+        <div class="md:col-span-8">
+          <ul class="space-y-4">
+            {d.about.whyNowBullets.map((bullet, i) => (
+              <li class="flex gap-5 text-lg text-body-strong leading-relaxed">
+                <span class="shrink-0 label-upper text-[10px] text-gold pt-2">0{i + 1}</span>
+                <span>{bullet}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <Section pad="lg">
+    <Container>
+      <div class="mb-12 md:mb-16 max-w-3xl">
+        <p class="label-upper text-[11px] text-gold mb-5">{d.about.whatEyebrow}</p>
+        <h2 class="text-3xl md:text-display-md font-bold text-ink leading-[1.1] tracking-tight">
+          {d.about.whatTitle}
+        </h2>
+        <p class="mt-5 text-lg text-body leading-relaxed">{d.about.whatLead}</p>
+      </div>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {works.map((w) => (
+          <article class="border-l border-hairline-strong hover:border-gold transition-colors pl-6 py-3">
+            <span class="label-upper text-[10px] text-gold">{w.num}</span>
+            <h3 class="mt-3 text-xl font-bold text-ink">{w.title}</h3>
+            <p class="mt-3 text-sm text-body leading-relaxed">{w.desc}</p>
+          </article>
+        ))}
+      </div>
+    </Container>
+  </Section>
+
+  <Section bg="surface-soft" pad="md">
+    <Container>
+      <div class="max-w-3xl">
+        <p class="label-upper text-[11px] text-gold mb-5">{d.about.alignEyebrow}</p>
+        <h2 class="text-3xl md:text-display-sm font-bold text-ink leading-[1.1] tracking-tight">
+          {d.about.alignTitle}
+        </h2>
+        <p class="mt-5 text-lg text-body leading-relaxed">{d.about.alignLead}</p>
+        <ul class="mt-8 space-y-3 text-body-strong">
+          <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet1}</span></li>
+          <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet2}</span></li>
+          <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet3}</span></li>
+          <li class="flex gap-3"><span class="text-gold">·</span><span>{d.about.alignBullet4}</span></li>
+        </ul>
+      </div>
+    </Container>
+  </Section>
+
+  <section class="bg-canvas border-t border-hairline">
+    <Container>
+      <div class="py-24 md:py-32 text-center max-w-2xl mx-auto">
+        <p class="label-upper text-[11px] text-gold mb-5">{d.about.gettingInvolvedEyebrow}</p>
+        <h2 class="text-3xl md:text-display-md font-bold text-ink leading-[1.1] tracking-tight text-balance">
+          {d.about.gettingInvolvedTitle}
+        </h2>
+        <p class="mt-6 text-lg text-body leading-relaxed">{d.about.gettingInvolvedBody}</p>
+        <div class="mt-10">
+          <a href={`/${lang}/contact`} class="btn btn-gold">
+            {d.about.gettingInvolvedCta}
+            <svg class="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

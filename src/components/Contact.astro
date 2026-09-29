@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from './Container.astro';
+import Section from './Section.astro';
+import { dict } from '../i18n/dict';
+import type { Lang } from '../i18n/config';
+
+export interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = dict(lang);
+
+const socials = [
+  { label: d.contact.socialLinkedIn, href: 'https://linkedin.com', icon: 'linkedin' },
+  { label: d.contact.socialFacebook, href: 'https://facebook.com', icon: 'facebook' },
+  { label: d.contact.socialInstagram, href: 'https://instagram.com', icon: 'instagram' },
+];
+
+const mailtoSubject = encodeURIComponent(d.contact.formSubjectLabel);
+const mailtoBody = encodeURIComponent(
+  `${d.contact.formNameLabel}: \n${d.contact.formEmailLabel}: \n\n${d.contact.formMessageLabel}:\n`
+);
+const mailtoHref = `mailto:${d.contact.emailValue}?subject=${mailtoSubject}&body=${mailtoBody}`;
+---
+
+<BaseLayout lang={lang} title={d.contact.pageTitle} description={d.contact.pageLead}>
+  <section class="bg-canvas border-b border-hairline">
+    <Container>
+      <div class="py-20 md:py-28 max-w-4xl">
+        <p class="label-upper text-[11px] text-gold mb-6 flex items-center gap-3">
+          <span class="inline-block w-8 h-px bg-gold"></span>
+          {d.contact.pageEyebrow}
+        </p>
+        <h1 class="text-4xl md:text-display-lg font-bold text-ink leading-[1.05] tracking-tight text-balance">
+          {d.contact.pageTitle}
+        </h1>
+        <p class="mt-6 text-lg md:text-xl text-body leading-relaxed max-w-3xl">{d.contact.pageLead}</p>
+      </div>
+    </Container>
+  </section>
+
+  <Section pad="lg">
+    <Container>
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <div>
+          <dl class="space-y-8">
+            <div>
+              <dt class="label-upper text-[10px] text-gold mb-2">{d.contact.emailLabel}</dt>
+              <dd class="text-xl md:text-2xl text-ink font-bold">
+                <a class="hover:text-gold transition-colors break-all" href={`mailto:${d.contact.emailValue}`}>{d.contact.emailValue}</a>
+              </dd>
+            </div>
+            <div>
+              <dt class="label-upper text-[10px] text-gold mb-2">{d.contact.phoneLabel}</dt>
+              <dd class="text-xl text-ink">{d.contact.phoneValue}</dd>
+            </div>
+            <div>
+              <dt class="label-upper text-[10px] text-gold mb-2">{d.contact.addressLabel}</dt>
+              <dd class="text-base md:text-lg text-body-strong leading-relaxed">{d.contact.addressValue}</dd>
+            </div>
+            <div>
+              <dt class="label-upper text-[10px] text-gold mb-2">{d.contact.hoursLabel}</dt>
+              <dd class="text-base text-body-strong">{d.contact.hoursValue}</dd>
+            </div>
+            <div>
+              <dt class="label-upper text-[10px] text-gold mb-3">{d.contact.socialLabel}</dt>
+              <dd>
+                <ul class="flex flex-wrap gap-3">
+                  {socials.map((s) => (
+                    <li>
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center justify-center min-w-[44px] h-11 px-5 border border-hairline hover:border-gold hover:text-gold text-body-strong label-upper text-[10px] transition-colors"
+                      >
+                        {s.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="bg-surface border border-hairline p-8 md:p-10">
+          <p class="label-upper text-[11px] text-gold mb-4">{d.contact.formEyebrow}</p>
+          <h2 class="text-2xl md:text-3xl font-bold text-ink leading-tight">{d.contact.formTitle}</h2>
+          <p class="mt-4 text-body leading-relaxed">{d.contact.formLead}</p>
+
+          <form action={mailtoHref} method="post" enctype="text/plain" class="mt-8 space-y-5">
+            <div>
+              <label for="name" class="block label-upper text-[10px] text-gold mb-2">{d.contact.formNameLabel}</label>
+              <input id="name" name="name" type="text" required class="w-full bg-canvas border border-hairline focus:border-gold px-4 h-12 text-ink placeholder-muted outline-none transition-colors" />
+            </div>
+            <div>
+              <label for="email" class="block label-upper text-[10px] text-gold mb-2">{d.contact.formEmailLabel}</label>
+              <input id="email" name="email" type="email" required class="w-full bg-canvas border border-hairline focus:border-gold px-4 h-12 text-ink placeholder-muted outline-none transition-colors" />
+            </div>
+            <div>
+              <label for="subject" class="block label-upper text-[10px] text-gold mb-2">{d.contact.formSubjectLabel}</label>
+              <input id="subject" name="subject" type="text" required class="w-full bg-canvas border border-hairline focus:border-gold px-4 h-12 text-ink placeholder-muted outline-none transition-colors" />
+            </div>
+            <div>
+              <label for="message" class="block label-upper text-[10px] text-gold mb-2">{d.contact.formMessageLabel}</label>
+              <textarea id="message" name="message" rows="6" required class="w-full bg-canvas border border-hairline focus:border-gold px-4 py-3 text-ink placeholder-muted outline-none transition-colors resize-y"></textarea>
+            </div>
+            <button type="submit" class="btn btn-gold w-full">
+              {d.contact.formSubmit}
+              <svg class="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <p class="text-xs text-muted leading-relaxed">{d.contact.formNote}</p>
+          </form>
+        </div>
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>

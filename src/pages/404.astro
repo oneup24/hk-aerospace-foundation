@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Section from '../components/Section.astro';
+import { dict } from '../i18n/dict';
+
+const lang = (Astro.url.pathname.match(/^\/(hk|zh|en)/)?.[1] ?? 'hk') as 'hk' | 'zh' | 'en';
+const d = dict(lang);
+---
+
+<BaseLayout lang={lang} title="404">
+  <Section pad="lg">
+    <Container>
+      <div class="py-20 md:py-28 text-center max-w-2xl mx-auto">
+        <p class="label-upper text-[11px] text-gold mb-6">404</p>
+        <h1 class="text-4xl md:text-display-md font-bold text-ink leading-tight">{lang === 'en' ? 'Page not found' : lang === 'zh' ? '找不到頁面' : '找不到頁面'}</h1>
+        <p class="mt-6 text-lg text-body leading-relaxed">
+          {lang === 'en'
+            ? 'The page you are looking for might have moved or no longer exists.'
+            : lang === 'zh'
+              ? '您要找的頁面可能已被移動或不存在。'
+              : '您要找的頁面可能已被移動或不存在。'}
+        </p>
+        <div class="mt-10">
+          <a href={`/${lang}/`} class="btn btn-gold">
+            ← {d.nav.home}
+          </a>
+        </div>
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>
