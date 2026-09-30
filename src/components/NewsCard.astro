@@ -16,12 +16,23 @@ const imgSrc = image ? (image.startsWith('http') ? image : base + image.replace(
 <a href={href} class="group block bg-surface border border-hairline hover:border-gold overflow-hidden transition">
   <div class="aspect-[16/10] bg-navy relative overflow-hidden grid place-items-center">
     {imgSrc ? (
-      <img src={imgSrc} alt={title} loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
-    ) : (
-      <svg class="w-20 h-20 text-gold/40" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M12 2L4 12h5v8h6v-8h5L12 2z"/>
-      </svg>
-    )}
+      <img
+        src={imgSrc}
+        alt={title}
+        loading="lazy"
+        class="absolute inset-0 w-full h-full object-cover"
+        onerror="this.style.display='none'; this.nextElementSibling && (this.nextElementSibling.style.display='grid');"
+      />
+    ) : null}
+    <svg
+      class:list={['w-20 h-20 text-gold/40', imgSrc ? 'hidden' : '']}
+      style={imgSrc ? 'display:none' : ''}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M12 2L4 12h5v8h6v-8h5L12 2z"/>
+    </svg>
     <span class="absolute top-4 left-4 label-upper text-[10px] bg-gold text-navy px-2.5 py-1">
       {category}
     </span>
