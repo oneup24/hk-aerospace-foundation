@@ -624,7 +624,8 @@
       const confirmMsg = L.deleteConfirm.replace('{title}', title || currentFile);
       if (!confirm(confirmMsg)) return;
 
-      const path = `src/content/news/${currentListLang}/${currentFile}.md`;
+      const deletedSlug = currentFile;
+      const path = `src/content/news/${currentListLang}/${deletedSlug}.md`;
       const deleteBtn = document.getElementById('deleteBtn');
       deleteBtn.disabled = true;
       deleteBtn.textContent = '...';
@@ -632,14 +633,19 @@
         await gh(`/repos/${REPO}/contents/${path}`, {
           method: 'DELETE',
           body: JSON.stringify({
-            message: `cms: delete article "${currentFile}"`,
+            message: `cms: delete article "${deletedSlug}"`,
             sha: currentSha,
             branch: BRANCH,
           }),
         });
-        showStatus('ok', `${L.deleted}: ${currentFile}`);
+        // Optimistically remove from DOM so user can't click stale item
+        document.querySelectorAll('.list__item').forEach(el => {
+          if (el.dataset.slug === deletedSlug) el.remove();
+        });
         clearForm();
-        loadArticleList();
+        showStatus('ok', `${L.deleted}: ${deletedSlug}`);
+        // Background refresh with cache-bust
+        await loadArticleList(true);
       } catch (e) {
         showStatus('err', `${L.deleteFailed}: ${e.message}`);
       } finally {
@@ -668,14 +674,17 @@
       return res.json();
     }
 
-    async function loadArticleList() {
+    async function loadArticleList(noCache = false) {
       const token = getToken();
       if (!token) {
         document.getElementById('articleList').innerHTML = '<p style="color: var(--muted); font-size: 13px;">Add a GitHub token in Settings to load articles.</p>';
         return;
       }
       try {
-        const data = await gh(`/repos/${REPO}/contents/src/content/news/${currentListLang}`);
+        const url = noCache
+          ? `/repos/${REPO}/contents/src/content/news/${currentListLang}?_=${Date.now()}`
+          : `/repos/${REPO}/contents/src/content/news/${currentListLang}`;
+        const data = await gh(url);
         const items = data
           .filter(f => f.name.endsWith('.md'))
           .sort((a, b) => b.name.localeCompare(a.name));
