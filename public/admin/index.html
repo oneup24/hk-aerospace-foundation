@@ -102,7 +102,9 @@
     .field__input, .field__select, .field__textarea {
       width: 100%; padding: 10px 12px; font-size: 14px; font-family: inherit;
       border: 1px solid var(--hairline-strong); background: var(--card); color: var(--ink);
+      overflow-x: auto;
     }
+    .field__input { text-overflow: clip; }
     .field__input:focus, .field__select:focus, .field__textarea:focus {
       outline: 2px solid var(--gold); outline-offset: -1px;
     }
@@ -674,6 +676,22 @@
       return res.json();
     }
 
+    // Decode GitHub base64 content (which is UTF-8 bytes) to a JS string
+    function decodeContent(b64) {
+      const binary = atob(b64.replace(/\n/g, ''));
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return new TextDecoder('utf-8').decode(bytes);
+    }
+
+    // Encode a JS string to base64 (UTF-8)
+    function encodeContent(str) {
+      const bytes = new TextEncoder().encode(str);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      return btoa(binary);
+    }
+
     async function loadArticleList(noCache = false) {
       const token = getToken();
       if (!token) {
@@ -707,7 +725,7 @@
     async function loadArticle(slug, sha) {
       try {
         const data = await gh(`/repos/${REPO}/contents/src/content/news/${currentListLang}/${slug}.md`);
-        const content = atob(data.content.replace(/\n/g, ''));
+        const content = decodeContent(data.content);
         const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
         if (!fmMatch) throw new Error('Invalid frontmatter format');
         const meta = parseFrontmatter(fmMatch[1]);
@@ -749,7 +767,7 @@
 
       const slug = (currentFile || slugify(title));
       const path = `src/content/news/${currentLang}/${slug}.md`;
-      const content = btoa(unescape(encodeURIComponent(buildFullDoc())));
+      const content = encodeContent(buildFullDoc());
       const message = currentSha
         ? `cms: update article "${slug}"`
         : `cms: create article "${slug}"`;
