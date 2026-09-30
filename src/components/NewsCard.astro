@@ -10,7 +10,7 @@ export interface Props {
 }
 const { href, category, title, excerpt, date, lang = 'hk', image } = Astro.props;
 const formatted = date.toLocaleDateString(lang === 'en' ? 'en-GB' : 'zh-HK', { year: 'numeric', month: 'short', day: 'numeric' });
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 const imgSrc = image ? (image.startsWith('http') ? image : base + image.replace(/^\//, '')) : null;
 ---
 <a href={href} class="group block bg-surface border border-hairline hover:border-gold overflow-hidden transition">
