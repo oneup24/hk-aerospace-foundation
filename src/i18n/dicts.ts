@@ -273,16 +273,16 @@ export const D: Record<"hk" | "zh" | "en", Dict> = {
         "我们正处于筹备初期。无论您是学生、家长、教育伙伴、媒体或企业，每一封邮件都会被认真阅读。",
       ctaPrimary: "联络我们",
       ctaSecondary: "阅读所有洞察",
-      slider1Eyebrow: "活动精华",
-      slider1Title: "航天人才交流酒会 2026",
-      slider1Caption:
-        "航天人才发展慈善基金会创会成员与支持者於首届交流酒会合影。",
-      slider2Eyebrow: "成立典礼",
-      slider2Title: "基金会成立典礼",
-      slider2Caption: "由顾问、学者与学生见证，共同开启香港航天下一个十年。",
-      slider3Eyebrow: "社群",
-      slider3Title: "同行共建",
-      slider3Caption: "每一次对话，都让香港航天社群更近一步。",
+      slider1Eyebrow: "最新消息",
+      slider1Title: "全港首届中小学「航天筑梦」航天 AI 创新大赛正式启动",
+      slider1Caption: "津贴小学议会（SPSC）与香港航天科技教育学院（HKATA）合照",
+      slider2Eyebrow: "最新消息",
+      slider2Title: "全港首届中小学「航天筑梦」航天 AI 创新大赛正式启动",
+      slider2Caption:
+        "香港津贴中学议会（HKSSSC）与香港航天科技教育学院（HKATA）合照",
+      slider3Eyebrow: "最新消息",
+      slider3Title: "全港首届中小学「航天筑梦」航天 AI 创新大赛正式启动",
+      slider3Caption: "三十万学生仰望星空　从课室通往星辰",
     },
     about: {
       pageEyebrow: "About the Foundation",
@@ -472,18 +472,21 @@ export const D: Record<"hk" | "zh" | "en", Dict> = {
         "We're in our founding phase. Whether you're a student, parent, education partner, journalist or enterprise — every message is read carefully.",
       ctaPrimary: "Contact us",
       ctaSecondary: "Read all insights",
-      slider1Eyebrow: "Event Highlight",
-      slider1Title: "Aerospace Talent Networking Reception 2026",
+      slider1Eyebrow: "Latest News",
+      slider1Title:
+        'Hong Kong\u2019s First "Space Dream" Aerospace AI Innovation Competition for Primary & Secondary Schools Officially Launches',
       slider1Caption:
-        "Founding members and supporters of HATDF at the inaugural reception.",
-      slider2Eyebrow: "Founding Moment",
-      slider2Title: "Foundation Founding Ceremony",
+        "Group photo with the Subsidised Primary Schools Council (SPSC) and the Hong Kong Aerospace Technology Education Academy (HKATA).",
+      slider2Eyebrow: "Latest News",
+      slider2Title:
+        'Hong Kong\u2019s First "Space Dream" Aerospace AI Innovation Competition for Primary & Secondary Schools Officially Launches',
       slider2Caption:
-        "Witnessed by advisors, scholars and students who will shape the next decade of Hong Kong aerospace.",
-      slider3Eyebrow: "Community",
-      slider3Title: "Building Together",
+        "Group photo with the Hong Kong Subsidised Secondary Schools Council (HKSSSC) and the Hong Kong Aerospace Technology Education Academy (HKATA).",
+      slider3Eyebrow: "Latest News",
+      slider3Title:
+        'Hong Kong\u2019s First "Space Dream" Aerospace AI Innovation Competition for Primary & Secondary Schools Officially Launches',
       slider3Caption:
-        "Every conversation brings us closer to a Hong Kong aerospace community that thrives across generations.",
+        "300,000 students gaze at the stars — from the classroom to the cosmos.",
     },
     about: {
       pageEyebrow: "About the Foundation",
