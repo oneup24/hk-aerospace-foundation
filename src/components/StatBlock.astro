@@ -3,8 +3,9 @@ export interface Props {
   number: string;
   label: string;
   suffix?: string;
+  source?: string;
 }
-const { number, label, suffix } = Astro.props;
+const { number, label, suffix, source } = Astro.props;
 ---
 <div class="border-l border-hairline-strong pl-6 py-2">
   <div class="flex items-baseline gap-1">
@@ -12,4 +13,5 @@ const { number, label, suffix } = Astro.props;
     {suffix && <span class="text-base md:text-xl text-gold font-bold">{suffix}</span>}
   </div>
   <div class="mt-4 label-upper text-[11px] text-muted leading-snug">{label}</div>
+  {source && <div class="mt-2 text-[10px] text-muted leading-snug italic">{source}</div>}
 </div>

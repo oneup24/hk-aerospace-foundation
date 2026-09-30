@@ -46,8 +46,10 @@ export type Dict = {
     stat2Label: string;
     stat3Number: string;
     stat3Label: string;
+    stat3Source: string;
     stat4Number: string;
     stat4Label: string;
+    stat4Source: string;
     whyEyebrow: string;
     whyTitle: string;
     whyLead: string;
