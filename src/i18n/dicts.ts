@@ -83,9 +83,9 @@ export const D: Record<"hk" | "zh" | "en", Dict> = {
       slider2Title: "全港首屆中小學「航天築夢」航天 AI 創新大賽正式啟動",
       slider2Caption:
         "香港津貼中學議會（HKSSSC）與香港航天科技教育學院（HKATA）合照",
-      slider3Eyebrow: "社群",
-      slider3Title: "同行共建",
-      slider3Caption: "每一次對話，都讓香港航天社群更近一步。",
+      slider3Eyebrow: "最新消息",
+      slider3Title: "全港首屆中小學「航天築夢」航天 AI 創新大賽正式啟動",
+      slider3Caption: "三十萬學生仰望星空　從課室通往星辰",
     },
     about: {
       pageEyebrow: "About the Foundation",
