@@ -225,7 +225,7 @@
       <div class="grid grid--main">
         <!-- Editor -->
         <div class="card">
-          <p class="card__h">Article Editor</p>
+          <p class="card__h" id="editorTitle">Article Editor</p>
 
           <div class="lang-tabs">
             <button class="lang-tab lang-tab--active" data-lang="hk">繁體</button>
@@ -234,49 +234,46 @@
           </div>
 
           <div class="field">
-            <label class="field__label" for="title">Title</label>
-            <input id="title" class="field__input" type="text" placeholder="文章標題" />
+            <label class="field__label" id="lblTitle" for="title">Title</label>
+            <input id="title" class="field__input" type="text" placeholder="Article title" />
           </div>
 
           <div class="field">
-            <label class="field__label" for="excerpt">Excerpt (max ~120 chars)</label>
-            <input id="excerpt" class="field__input" type="text" placeholder="一句話總結" />
+            <label class="field__label" id="lblExcerpt" for="excerpt">Excerpt (max ~120 chars)</label>
+            <input id="excerpt" class="field__input" type="text" placeholder="One-line summary" />
           </div>
 
           <div class="field__row">
             <div class="field">
-              <label class="field__label" for="category">Category</label>
+              <label class="field__label" id="lblCategory" for="category">Category</label>
               <select id="category" class="field__select">
-                <option value="政策解讀">政策解讀</option>
-                <option value="趨勢分析">趨勢分析</option>
-                <option value="深度分析">深度分析</option>
-                <option value="新聞公布">新聞公布</option>
+                <option value="Policy Decode">Policy Decode</option>
               </select>
             </div>
             <div class="field">
-              <label class="field__label" for="date">Date</label>
+              <label class="field__label" id="lblDate" for="date">Date</label>
               <input id="date" class="field__input" type="date" />
             </div>
           </div>
 
           <div class="field__row">
             <div class="field">
-              <label class="field__label" for="author">Author</label>
+              <label class="field__label" id="lblAuthor" for="author">Author</label>
               <input id="author" class="field__input" type="text" value="HATDF Editorial" />
             </div>
             <div class="field">
-              <label class="field__label" for="readingMinutes">Reading Time (min)</label>
+              <label class="field__label" id="lblReading" for="readingMinutes">Reading Time (min)</label>
               <input id="readingMinutes" class="field__input" type="number" min="1" max="30" value="4" />
             </div>
           </div>
 
           <div class="field">
-            <label class="field__label" for="keywords">SEO Keywords (comma-separated)</label>
-            <input id="keywords" class="field__input" type="text" placeholder="香港航天人才, 航天政策" />
+            <label class="field__label" id="lblKeywords" for="keywords">SEO Keywords (comma-separated)</label>
+            <input id="keywords" class="field__input" type="text" placeholder="Hong Kong aerospace, talent policy" />
           </div>
 
           <div class="field">
-            <label class="field__label">Body (Markdown)</label>
+            <label class="field__label" id="lblBody">Body (Markdown)</label>
             <textarea id="body"></textarea>
           </div>
 
@@ -290,7 +287,7 @@
         <!-- Right column: existing articles + preview -->
         <div>
           <div class="card" style="margin-bottom: 24px;">
-            <p class="card__h">Existing Articles</p>
+            <p class="card__h" id="existingArticlesTitle">Existing Articles</p>
             <div class="lang-tabs" style="margin-bottom: 12px;">
               <button class="lang-tab lang-tab--active" data-list-lang="hk">繁體</button>
               <button class="lang-tab" data-list-lang="zh">简体</button>
@@ -300,7 +297,7 @@
           </div>
 
           <div id="previewCard" class="card hidden">
-            <p class="card__h">Preview</p>
+            <p class="card__h" id="previewTitleLabel">Preview</p>
             <div id="previewContent" class="preview"></div>
           </div>
         </div>
@@ -320,6 +317,152 @@
     let currentFile = null;
     let currentSha = null;
     let easyMDE = null;
+
+    // ---- i18n labels & categories ----
+    const i18n = {
+      hk: {
+        editorTitle: '文章編輯器',
+        title: '標題',
+        excerpt: '摘要 (最多 ~120 字)',
+        category: '分類',
+        date: '日期',
+        author: '作者',
+        readingTime: '閱讀時間 (分鐘)',
+        keywords: 'SEO 關鍵字 (逗號分隔)',
+        body: '內文 (Markdown)',
+        publish: '發佈到 GitHub',
+        preview: '預覽',
+        clear: '清除表單',
+        existingArticles: '現有文章',
+        previewTitle: '預覽',
+        loading: '載入中…',
+        addToken: '請到 Settings 加入 GitHub token 以載入文章。',
+        noArticles: '尚未有文章。',
+        error: '錯誤',
+        required: '標題和日期為必填。',
+        loadedOk: '已載入',
+        published: '已發佈',
+        publishFailed: '發佈失敗',
+        loadFailed: '載入失敗',
+        tokenSaved: 'Token 已儲存。',
+        tokenCleared: 'Token 已清除。',
+        clearConfirm: '確認清除所有表單欄位？',
+        lang: '語言',
+        tokenOk: 'Token ✓',
+        noToken: '未設定 Token',
+        catPolicy: '政策解讀',
+        catTrend: '趨勢分析',
+        catDeep: '深度分析',
+        catNews: '新聞公布',
+      },
+      zh: {
+        editorTitle: '文章编辑器',
+        title: '标题',
+        excerpt: '摘要 (最多 ~120 字)',
+        category: '分类',
+        date: '日期',
+        author: '作者',
+        readingTime: '阅读时间 (分钟)',
+        keywords: 'SEO 关键词 (逗号分隔)',
+        body: '正文 (Markdown)',
+        publish: '发布到 GitHub',
+        preview: '预览',
+        clear: '清除表单',
+        existingArticles: '现有文章',
+        previewTitle: '预览',
+        loading: '载入中…',
+        addToken: '请到 Settings 加入即时 GFM token 以载入文章。',
+        noArticles: '尚无文章。',
+        error: '错误',
+        required: '标题和日期为必填。',
+        loadedOk: '已载入',
+        published: '已发布',
+        publishFailed: '发布失败',
+        loadFailed: '载入失败',
+        tokenSaved: 'Token 已储存。',
+        tokenCleared: 'Token 已清除。',
+        clearConfirm: '确认清除所有表单字段？',
+        lang: '语言',
+        tokenOk: 'Token ✓',
+        noToken: '未设定 Token',
+        catPolicy: 'Policy Decode',
+        catTrend: 'Trend Analysis',
+        catDeep: 'Deep Dive',
+        catNews: 'Announcement',
+      },
+      en: {
+        editorTitle: 'Article Editor',
+        title: 'Title',
+        excerpt: 'Excerpt (max ~120 chars)',
+        category: 'Category',
+        date: 'Date',
+        author: 'Author',
+        readingTime: 'Reading Time (min)',
+        keywords: 'SEO Keywords (comma-separated)',
+        body: 'Body (Markdown)',
+        publish: 'Publish to GitHub',
+        preview: 'Preview',
+        clear: 'Clear Form',
+        existingArticles: 'Existing Articles',
+        previewTitle: 'Preview',
+        loading: 'Loading…',
+        addToken: 'Add a GitHub token in Settings to load articles.',
+        noArticles: 'No articles yet.',
+        error: 'Error',
+        required: 'Title and date are required.',
+        loadedOk: 'Loaded',
+        published: 'Published',
+        publishFailed: 'Publish failed',
+        loadFailed: 'Load failed',
+        tokenSaved: 'Token saved.',
+        tokenCleared: 'Token cleared.',
+        clearConfirm: 'Clear all form fields?',
+        lang: 'Lang',
+        tokenOk: 'Token ✓',
+        noToken: 'No token',
+        catPolicy: 'Policy Decode',
+        catTrend: 'Trend Analysis',
+        catDeep: 'Deep Dive',
+        catNews: 'Announcement',
+      },
+    };
+
+    function applyLang() {
+      const L = i18n[currentLang];
+      document.getElementById('editorTitle').textContent = L.editorTitle;
+      document.getElementById('lblTitle').textContent = L.title;
+      document.getElementById('lblExcerpt').textContent = L.excerpt;
+      document.getElementById('lblCategory').textContent = L.category;
+      document.getElementById('lblDate').textContent = L.date;
+      document.getElementById('lblAuthor').textContent = L.author;
+      document.getElementById('lblReading').textContent = L.readingTime;
+      document.getElementById('lblKeywords').textContent = L.keywords;
+      document.getElementById('lblBody').textContent = L.body;
+      document.getElementById('publishBtn').textContent = L.publish;
+      document.getElementById('previewBtn').textContent = L.preview;
+      document.getElementById('clearBtn').textContent = L.clear;
+      document.getElementById('existingArticlesTitle').textContent = L.existingArticles;
+      document.getElementById('previewTitleLabel').textContent = L.previewTitle;
+      const placeholderTitle = currentLang === 'hk' ? '文章標題' : currentLang === 'zh' ? '文章标题' : 'Article title';
+      const placeholderExcerpt = currentLang === 'hk' ? '一句話總結' : currentLang === 'zh' ? '一句话总结' : 'One-line summary';
+      const placeholderKw = currentLang === 'hk' ? '香港航天人才, 航天政策' : currentLang === 'zh' ? '香港航天人才, 航天政策' : 'Hong Kong aerospace, talent policy';
+      document.getElementById('title').placeholder = placeholderTitle;
+      document.getElementById('excerpt').placeholder = placeholderExcerpt;
+      document.getElementById('keywords').placeholder = placeholderKw;
+
+      // Category options
+      const catSel = document.getElementById('category');
+      catSel.innerHTML = `
+        <option value="${L.catPolicy}">${L.catPolicy}</option>
+        <option value="${L.catTrend}">${L.catTrend}</option>
+        <option value="${L.catDeep}">${L.catDeep}</option>
+        <option value="${L.catNews}">${L.catNews}</option>
+      `;
+
+      // Update user label
+      const token = getToken();
+      userLabel.textContent = `${L.lang}: ${currentLang.toUpperCase()} · ${token ? L.tokenOk : L.noToken}`;
+    }
 
     // ---- Password gate ----
     const gate = document.getElementById('gate');
@@ -356,15 +499,17 @@
     patSave.addEventListener('click', () => {
       localStorage.setItem(TOKEN_KEY, patInput.value.trim());
       settingsModal.classList.remove('modal--open');
-      showStatus('ok', 'Token saved.');
+      showStatus('ok', i18n[currentLang].tokenSaved);
       loadArticleList();
+      applyLang();
     });
     patClear.addEventListener('click', () => {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
       patInput.value = '';
       settingsModal.classList.remove('modal--open');
-      showStatus('info', 'Token cleared.');
+      showStatus('info', i18n[currentLang].tokenCleared);
+      applyLang();
     });
 
     function getToken() { return localStorage.getItem(TOKEN_KEY) || ''; }
@@ -604,6 +749,7 @@
           loadArticleList();
         } else {
           currentLang = lang;
+          applyLang();
         }
       });
     });
@@ -618,7 +764,7 @@
       content.innerHTML = renderMarkdown(md);
     });
     document.getElementById('clearBtn').addEventListener('click', () => {
-      if (confirm('Clear all form fields?')) clearForm();
+      if (confirm(i18n[currentLang].clearConfirm)) clearForm();
     });
 
     // ---- Minimal markdown renderer (headings, bold, italic, links, lists, blockquote, code, hr) ----
@@ -659,13 +805,13 @@
       document.getElementById('app').classList.remove('hidden');
       setToday();
       initEditor();
+      applyLang();
       const token = getToken();
       if (token) {
         loadArticleList();
       } else {
         setTimeout(() => settingsModal.classList.add('modal--open'), 200);
       }
-      userLabel.textContent = `Lang: ${currentLang} · ${token ? 'Token ✓' : 'No token'}`;
     }
   </script>
 </body>
