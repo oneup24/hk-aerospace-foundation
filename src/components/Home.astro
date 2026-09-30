@@ -29,9 +29,9 @@ const pillars = [
 <BaseLayout lang={lang} description={d.home.heroSubtitle}>
   <HeroSlider lang={lang} />
 
-  <section class="bg-canvas border-b border-hairline">
+<section class="bg-canvas border-b border-hairline">
     <Container>
-      <div class="py-16 md:py-24 grid md:grid-cols-12 gap-10 md:gap-16 items-end">
+      <div class="py-12 md:py-16 grid md:grid-cols-12 gap-10 md:gap-16 items-end">
         <div class="md:col-span-8">
           <p class="label-upper text-[11px] text-gold mb-6 flex items-center gap-3">
             <span class="inline-block w-8 h-px bg-gold"></span>
@@ -46,7 +46,7 @@ const pillars = [
         </div>
         <div class="md:col-span-4">
           <p class="text-base md:text-lg text-body-strong leading-relaxed">{d.home.heroSubtitle}</p>
-          <div class="mt-8 flex flex-wrap gap-3">
+          <div class="mt-6 flex flex-wrap gap-3">
             <a href={langPath(lang, 'about')} class="btn btn-gold">
               {d.home.heroCtaPrimary}
               <svg class="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -60,7 +60,7 @@ const pillars = [
     </Container>
   </section>
 
-  <Section bg="surface" pad="md">
+  <Section bg="surface" pad="sm">
     <Container>
       <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <StatBlock number={d.home.stat1Number} label={d.home.stat1Label} />
@@ -71,7 +71,7 @@ const pillars = [
     </Container>
   </Section>
 
-  <Section pad="md">
+  <Section pad="sm">
     <Container>
       <div class="grid md:grid-cols-12 gap-10 md:gap-16">
         <div class="md:col-span-5">
@@ -88,7 +88,7 @@ const pillars = [
     </Container>
   </Section>
 
-  <Section bg="surface-soft" pad="md">
+  <Section bg="surface-soft" pad="sm">
     <Container>
       <div class="mb-12 md:mb-16 max-w-3xl">
         <p class="label-upper text-[11px] text-gold mb-5">{d.home.missionEyebrow}</p>
@@ -109,9 +109,9 @@ const pillars = [
     </Container>
   </Section>
 
-  <Section pad="md">
+  <Section pad="sm">
     <Container>
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8 md:mb-10">
         <div class="max-w-2xl">
           <p class="label-upper text-[11px] text-gold mb-5">{d.home.insightsEyebrow}</p>
           <h2 class="text-3xl md:text-display-md font-bold text-ink leading-[1.1] tracking-tight">
