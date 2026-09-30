@@ -76,13 +76,13 @@ export const D: Record<"hk" | "zh" | "en", Dict> = {
         "我們正處於籌備初期。無論您是學生、家長、教育夥伴、媒體或企業，每一封郵件都會被認真閱讀。",
       ctaPrimary: "聯絡我們",
       ctaSecondary: "閱讀所有洞察",
-      slider1Eyebrow: "活動精華",
+      slider1Eyebrow: "最新消息",
       slider1Title: "全港首屆中小學「航天築夢」航天 AI 創新大賽正式啟動",
       slider1Caption: "津貼小學議會（SPSC）與香港航天科技教育學院（HKATA）合照",
-      slider2Eyebrow: "全港首屆中小學「航天築夢」航天 AI 創新大賽正式啟動",
-      slider2Title:
+      slider2Eyebrow: "最新消息",
+      slider2Title: "全港首屆中小學「航天築夢」航天 AI 創新大賽正式啟動",
+      slider2Caption:
         "香港津貼中學議會（HKSSSC）與香港航天科技教育學院（HKATA）合照",
-      slider2Caption: "由顧問、學者與學生見證，共同開啟香港航天下一個十年。",
       slider3Eyebrow: "社群",
       slider3Title: "同行共建",
       slider3Caption: "每一次對話，都讓香港航天社群更近一步。",
