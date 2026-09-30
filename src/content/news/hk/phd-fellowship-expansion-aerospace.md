@@ -10,7 +10,9 @@ keywords:
   - 教資會
   - 航天人才
   - 香港PhD
+image: /img/news/phd-fellowship-expansion-aerospace.png
 ---
+
 
 2026 施政報告中，有一組數字值得每一個關心航天的本地年輕人留意——**香港博士獎學金計劃（HKPFS）名額將由 400 個增至 550 個，增幅達 37.5%。**
 
