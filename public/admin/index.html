@@ -114,6 +114,12 @@
     .editor-toolbar { border: 1px solid var(--hairline-strong); border-bottom: 0; }
     .editor-toolbar + .CodeMirror { border: 1px solid var(--hairline-strong); min-height: 320px; }
     .CodeMirror { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    .CodeMirror pre.CodeMirror-line,
+    .CodeMirror pre.CodeMirror-line-like,
+    .CodeMirror-line,
+    .CodeMirror-line-like { white-space: pre-wrap !important; word-break: break-word !important; }
+    .CodeMirror-wrap pre.CodeMirror-line,
+    .CodeMirror-wrap pre.CodeMirror-line-like { white-space: pre-wrap !important; word-break: break-word !important; }
 
     .list { display: flex; flex-direction: column; gap: 8px; max-height: 480px; overflow-y: auto; }
     .list__item {
