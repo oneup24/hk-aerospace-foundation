@@ -1,3 +1,9 @@
+---
+// HATDF Dashboard — single-file CMS for editing news articles via GitHub Contents API
+// Optional shared GitHub token injected at build time via PUBLIC_GITHUB_TOKEN env var
+// Falls back to per-browser localStorage token if env var is empty
+const sharedToken = import.meta.env.PUBLIC_GITHUB_TOKEN ?? '';
+---
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,6 +16,7 @@
   <link rel="stylesheet" href="https://unpkg.com/easymde@2.18.0/dist/easymde.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <script is:inline set:html={`window.__HATDF_SHARED_TOKEN__ = ${JSON.stringify(sharedToken)};`}></script>
   <style>
     :root {
       --bg: #f9fafb;
@@ -175,6 +182,12 @@
     }
     .lang-tab--active { background: var(--ink); color: white; border-color: var(--ink); }
 
+    .token-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+      background: #fffbeb; color: var(--gold); border: 1px solid var(--gold);
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -221,6 +234,7 @@
           <span class="header__title">Dashboard</span>
         </div>
         <div class="header__actions">
+          <span id="tokenPill" class="token-pill hidden">SHARED TOKEN</span>
           <span id="userLabel"></span>
           <button id="settingsBtn" class="btn btn--ghost btn--sm">Settings</button>
         </div>
@@ -335,7 +349,6 @@
     const BRANCH = 'main';
     const PASSWORD_HASH = 'hkata';
     const TOKEN_KEY = 'hatdf_pat';
-    const USER_KEY = 'hatdf_user';
 
     let currentLang = 'hk';
     let currentListLang = 'hk';
@@ -343,145 +356,71 @@
     let currentSha = null;
     let easyMDE = null;
 
+    // Token resolution: build-time shared token > localStorage > none
+    const SHARED_TOKEN = window.__HATDF_SHARED_TOKEN__ || '';
+    function getToken() {
+      return SHARED_TOKEN || localStorage.getItem(TOKEN_KEY) || '';
+    }
+    function hasSharedToken() { return !!SHARED_TOKEN; }
+
     // ---- i18n labels & categories ----
     const i18n = {
       hk: {
         editorTitle: '文章編輯器',
-        title: '標題',
-        excerpt: '摘要 (最多 ~120 字)',
-        category: '分類',
-        date: '日期',
-        author: '作者',
-        readingTime: '閱讀時間 (分鐘)',
-        keywords: 'SEO 關鍵字 (逗號分隔)',
-        image: '封面圖片 (顯示喺新聞列表卡片)',
-        upload: '上傳…',
-        remove: '移除',
-        uploadFailed: '上傳失敗',
-        uploadOk: '已上傳',
-        body: '內文 (Markdown)',
-        publish: '發佈到 GitHub',
-        preview: '預覽',
-        clear: '清除表單',
-        delete: '刪除文章',
-        existingArticles: '現有文章',
-        previewTitle: '預覽',
-        loading: '載入中…',
+        title: '標題', excerpt: '摘要 (最多 ~120 字)', category: '分類', date: '日期',
+        author: '作者', readingTime: '閱讀時間 (分鐘)', keywords: 'SEO 關鍵字 (逗號分隔)',
+        image: '封面圖片 (顯示喺新聞列表卡片)', upload: '上傳…', remove: '移除',
+        uploadFailed: '上傳失敗', uploadOk: '已上傳', body: '內文 (Markdown)',
+        publish: '發佈到 GitHub', preview: '預覽', clear: '清除表單', delete: '刪除文章',
+        existingArticles: '現有文章', previewTitle: '預覽', loading: '載入中…',
         addToken: '請到 Settings 加入 GitHub token 以載入文章。',
-        noArticles: '尚未有文章。',
-        error: '錯誤',
-        required: '標題和日期為必填。',
-        loadedOk: '已載入',
-        published: '已發佈',
-        publishFailed: '發佈失敗',
-        loadFailed: '載入失敗',
-        deleted: '已刪除',
-        deleteFailed: '刪除失敗',
+        noArticles: '尚未有文章。', error: '錯誤', required: '標題和日期為必填。',
+        loadedOk: '已載入', published: '已發佈', publishFailed: '發佈失敗', loadFailed: '載入失敗',
+        deleted: '已刪除', deleteFailed: '刪除失敗',
         deleteConfirm: '確認刪除「{title}」？此動作不能撤銷。',
-        tokenSaved: 'Token 已儲存。',
-        tokenCleared: 'Token 已清除。',
-        clearConfirm: '確認清除所有表單欄位？',
-        lang: '語言',
-        tokenOk: 'Token ✓',
-        noToken: '未設定 Token',
-        catPolicy: '政策解讀',
-        catTrend: '趨勢分析',
-        catDeep: '深度分析',
-        catNews: '新聞公布',
-        catEvent: '活動報導',
-        catMedia: '媒體訪問',
+        tokenSaved: 'Token 已儲存。', tokenCleared: 'Token 已清除。',
+        clearConfirm: '確認清除所有表單欄位？', lang: '語言',
+        tokenOk: 'Token ✓', noToken: '未設定 Token',
+        catPolicy: '政策解讀', catTrend: '趨勢分析', catDeep: '深度分析',
+        catNews: '新聞公布', catEvent: '活動報導', catMedia: '媒體訪問',
       },
       zh: {
-        editorTitle: '文章编辑器',
-        title: '标题',
-        excerpt: '摘要 (最多 ~120 字)',
-        category: '分类',
-        date: '日期',
-        author: '作者',
-        readingTime: '阅读时间 (分钟)',
-        keywords: 'SEO 关键词 (逗号分隔)',
-        image: '封面图片 (显示在新闻列表卡片)',
-        upload: '上传…',
-        remove: '移除',
-        uploadFailed: '上传失败',
-        uploadOk: '已上传',
-        body: '正文 (Markdown)',
-        publish: '发布到 GitHub',
-        preview: '预览',
-        clear: '清除表单',
-        delete: '删除文章',
-        existingArticles: '现有文章',
-        previewTitle: '预览',
-        loading: '载入中…',
+        editorTitle: '文章编辑器', title: '标题', excerpt: '摘要 (最多 ~120 字)',
+        category: '分类', date: '日期', author: '作者', readingTime: '阅读时间 (分钟)',
+        keywords: 'SEO 关键词 (逗号分隔)', image: '封面图片 (显示在新闻列表卡片)',
+        upload: '上传…', remove: '移除', uploadFailed: '上传失败', uploadOk: '已上传',
+        body: '正文 (Markdown)', publish: '发布到 GitHub', preview: '预览',
+        clear: '清除表单', delete: '删除文章', existingArticles: '现有文章',
+        previewTitle: '预览', loading: '载入中…',
         addToken: '请到 Settings 加入 GitHub token 以载入文章。',
-        noArticles: '尚无文章。',
-        error: '错误',
-        required: '标题和日期为必填。',
-        loadedOk: '已载入',
-        published: '已发布',
-        publishFailed: '发布失败',
-        loadFailed: '载入失败',
-        deleted: '已删除',
-        deleteFailed: '删除失败',
+        noArticles: '尚无文章。', error: '错误', required: '标题和日期为必填。',
+        loadedOk: '已载入', published: '已发布', publishFailed: '发布失败', loadFailed: '载入失败',
+        deleted: '已删除', deleteFailed: '删除失败',
         deleteConfirm: '确认删除「{title}」？此动作不能撤销。',
-        tokenSaved: 'Token 已储存。',
-        tokenCleared: 'Token 已清除。',
-        clearConfirm: '确认清除所有表单字段？',
-        lang: '语言',
-        tokenOk: 'Token ✓',
-        noToken: '未设定 Token',
-        catPolicy: 'Policy Decode',
-        catTrend: 'Trend Analysis',
-        catDeep: 'Deep Dive',
-        catNews: 'Announcement',
-        catEvent: '活動報導',
-        catMedia: '媒體訪問',
+        tokenSaved: 'Token 已储存。', tokenCleared: 'Token 已清除。',
+        clearConfirm: '确认清除所有表单字段？', lang: '语言',
+        tokenOk: 'Token ✓', noToken: '未设定 Token',
+        catPolicy: 'Policy Decode', catTrend: 'Trend Analysis', catDeep: 'Deep Dive',
+        catNews: 'Announcement', catEvent: '活動報導', catMedia: '媒體訪問',
       },
       en: {
-        editorTitle: 'Article Editor',
-        title: 'Title',
-        excerpt: 'Excerpt (max ~120 chars)',
-        category: 'Category',
-        date: 'Date',
-        author: 'Author',
-        readingTime: 'Reading Time (min)',
-        keywords: 'SEO Keywords (comma-separated)',
-        image: 'Cover Image (shown on news list cards)',
-        upload: 'Upload…',
-        remove: 'Remove',
-        uploadFailed: 'Upload failed',
-        uploadOk: 'Uploaded',
-        body: 'Body (Markdown)',
-        publish: 'Publish to GitHub',
-        preview: 'Preview',
-        clear: 'Clear Form',
-        delete: 'Delete Article',
-        existingArticles: 'Existing Articles',
-        previewTitle: 'Preview',
-        loading: 'Loading…',
+        editorTitle: 'Article Editor', title: 'Title', excerpt: 'Excerpt (max ~120 chars)',
+        category: 'Category', date: 'Date', author: 'Author', readingTime: 'Reading Time (min)',
+        keywords: 'SEO Keywords (comma-separated)', image: 'Cover Image (shown on news list cards)',
+        upload: 'Upload…', remove: 'Remove', uploadFailed: 'Upload failed', uploadOk: 'Uploaded',
+        body: 'Body (Markdown)', publish: 'Publish to GitHub', preview: 'Preview',
+        clear: 'Clear Form', delete: 'Delete Article', existingArticles: 'Existing Articles',
+        previewTitle: 'Preview', loading: 'Loading…',
         addToken: 'Add a GitHub token in Settings to load articles.',
-        noArticles: 'No articles yet.',
-        error: 'Error',
-        required: 'Title and date are required.',
-        loadedOk: 'Loaded',
-        published: 'Published',
-        publishFailed: 'Publish failed',
-        loadFailed: 'Load failed',
-        deleted: 'Deleted',
-        deleteFailed: 'Delete failed',
+        noArticles: 'No articles yet.', error: 'Error', required: 'Title and date are required.',
+        loadedOk: 'Loaded', published: 'Published', publishFailed: 'Publish failed', loadFailed: 'Load failed',
+        deleted: 'Deleted', deleteFailed: 'Delete failed',
         deleteConfirm: 'Delete "{title}"? This cannot be undone.',
-        tokenSaved: 'Token saved.',
-        tokenCleared: 'Token cleared.',
-        clearConfirm: 'Clear all form fields?',
-        lang: 'Lang',
-        tokenOk: 'Token ✓',
-        noToken: 'No token',
-        catPolicy: 'Policy Decode',
-        catTrend: 'Trend Analysis',
-        catDeep: 'Deep Dive',
-        catNews: 'Announcement',
-        catEvent: 'Event Coverage',
-        catMedia: 'Media Interview',
+        tokenSaved: 'Token saved.', tokenCleared: 'Token cleared.',
+        clearConfirm: 'Clear all form fields?', lang: 'Lang',
+        tokenOk: 'Token ✓', noToken: 'No token',
+        catPolicy: 'Policy Decode', catTrend: 'Trend Analysis', catDeep: 'Deep Dive',
+        catNews: 'Announcement', catEvent: 'Event Coverage', catMedia: 'Media Interview',
       },
     };
 
@@ -511,7 +450,6 @@
       document.getElementById('excerpt').placeholder = placeholderExcerpt;
       document.getElementById('keywords').placeholder = placeholderKw;
 
-      // Category options
       const catSel = document.getElementById('category');
       catSel.innerHTML = `
         <option value="${L.catPolicy}">${L.catPolicy}</option>
@@ -523,9 +461,12 @@
       `;
       document.getElementById('deleteBtn').textContent = L.delete;
 
-      // Update user label
       const token = getToken();
+      const usingShared = hasSharedToken();
       userLabel.textContent = `${L.lang}: ${currentLang.toUpperCase()} · ${token ? L.tokenOk : L.noToken}`;
+      const pill = document.getElementById('tokenPill');
+      if (usingShared) pill.classList.remove('hidden');
+      else pill.classList.add('hidden');
     }
 
     // ---- Password gate ----
@@ -569,16 +510,12 @@
     });
     patClear.addEventListener('click', () => {
       localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
       patInput.value = '';
       settingsModal.classList.remove('modal--open');
       showStatus('info', i18n[currentLang].tokenCleared);
       applyLang();
     });
 
-    function getToken() { return localStorage.getItem(TOKEN_KEY) || ''; }
-
-    // ---- Status messages ----
     const statusEl = document.getElementById('status');
     function showStatus(kind, msg) {
       statusEl.className = `status status--${kind}`;
@@ -589,7 +526,6 @@
       }
     }
 
-    // ---- Markdown editor ----
     function initEditor() {
       easyMDE = new EasyMDE({
         element: document.getElementById('body'),
@@ -608,7 +544,6 @@
       });
     }
 
-    // ---- Form fields ----
     function setToday() {
       const today = new Date().toISOString().slice(0, 10);
       document.getElementById('date').value = today;
@@ -624,9 +559,7 @@
       const keywordsRaw = document.getElementById('keywords').value.trim();
       const keywords = keywordsRaw ? keywordsRaw.split(',').map(k => k.trim()).filter(Boolean) : [];
       const image = document.getElementById('image').value.trim();
-
       const quoteIfColon = (s) => /[:'"]/.test(s) ? `"${s.replace(/"/g, '\\"')}"` : s;
-
       let fm = `---\n`;
       fm += `title: ${quoteIfColon(title)}\n`;
       fm += `excerpt: ${quoteIfColon(excerpt)}\n`;
@@ -634,10 +567,7 @@
       fm += `date: ${date}\n`;
       if (author) fm += `author: ${quoteIfColon(author)}\n`;
       fm += `readingMinutes: ${readingMinutes}\n`;
-      if (keywords.length) {
-        fm += `keywords:\n`;
-        keywords.forEach(k => { fm += `  - ${k}\n`; });
-      }
+      if (keywords.length) { fm += `keywords:\n`; keywords.forEach(k => { fm += `  - ${k}\n`; }); }
       if (image) fm += `image: ${quoteIfColon(image)}\n`;
       fm += `---\n\n`;
       return fm;
@@ -674,12 +604,8 @@
       const url = document.getElementById('image').value.trim();
       const preview = document.getElementById('imagePreview');
       const img = document.getElementById('imagePreviewImg');
-      if (url) {
-        img.src = url;
-        preview.classList.remove('hidden');
-      } else {
-        preview.classList.add('hidden');
-      }
+      if (url) { img.src = url; preview.classList.remove('hidden'); }
+      else { preview.classList.add('hidden'); }
     }
 
     async function uploadImage(file) {
@@ -689,36 +615,20 @@
       status.classList.remove('hidden');
       status.textContent = `Uploading ${file.name} (${(file.size / 1024).toFixed(0)} KB)...`;
       uploadLabel.textContent = '...';
-
       const ext = file.name.split('.').pop().toLowerCase();
       const slugBase = currentFile || slugify(document.getElementById('title').value.trim() || 'article');
       const filename = `${slugBase}.${ext}`;
       const path = `public/img/news/${filename}`;
-
       try {
         const bytes = new Uint8Array(await file.arrayBuffer());
         let binary = '';
         for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
         const content = btoa(binary);
-
         let sha = undefined;
-        try {
-          const existing = await gh(`/repos/${REPO}/contents/${path}?_=${Date.now()}`);
-          sha = existing.sha;
-        } catch (e) { /* doesn't exist yet */ }
-
-        const body = {
-          message: `cms: upload cover image for "${slugBase}"`,
-          content,
-          branch: BRANCH,
-        };
+        try { const existing = await gh(`/repos/${REPO}/contents/${path}?_=${Date.now()}`); sha = existing.sha; } catch (e) {}
+        const body = { message: `cms: upload cover image for "${slugBase}"`, content, branch: BRANCH };
         if (sha) body.sha = sha;
-
-        await gh(`/repos/${REPO}/contents/${path}`, {
-          method: 'PUT',
-          body: JSON.stringify(body),
-        });
-
+        await gh(`/repos/${REPO}/contents/${path}`, { method: 'PUT', body: JSON.stringify(body) });
         const publicUrl = `/img/news/${filename}`;
         document.getElementById('image').value = publicUrl;
         updateImagePreview();
@@ -727,52 +637,35 @@
       } catch (e) {
         status.textContent = `${L.uploadFailed}: ${e.message}`;
         showStatus('err', `${L.uploadFailed}: ${e.message}`);
-      } finally {
-        uploadLabel.textContent = L.upload;
-      }
+      } finally { uploadLabel.textContent = L.upload; }
     }
 
     async function deleteArticle() {
-      if (!currentFile || !currentSha) {
-        showStatus('err', 'Load an article first.');
-        return;
-      }
+      if (!currentFile || !currentSha) { showStatus('err', 'Load an article first.'); return; }
       const title = document.getElementById('title').value.trim();
       const L = i18n[currentLang];
       const confirmMsg = L.deleteConfirm.replace('{title}', title || currentFile);
       if (!confirm(confirmMsg)) return;
-
       const deletedSlug = currentFile;
       const path = `src/content/news/${currentListLang}/${deletedSlug}.md`;
       const deleteBtn = document.getElementById('deleteBtn');
-      deleteBtn.disabled = true;
-      deleteBtn.textContent = '...';
+      deleteBtn.disabled = true; deleteBtn.textContent = '...';
       try {
         await gh(`/repos/${REPO}/contents/${path}`, {
           method: 'DELETE',
-          body: JSON.stringify({
-            message: `cms: delete article "${deletedSlug}"`,
-            sha: currentSha,
-            branch: BRANCH,
-          }),
+          body: JSON.stringify({ message: `cms: delete article "${deletedSlug}"`, sha: currentSha, branch: BRANCH }),
         });
-        // Optimistically remove from DOM so user can't click stale item
         document.querySelectorAll('.list__item').forEach(el => {
           if (el.dataset.slug === deletedSlug) el.remove();
         });
         clearForm();
         showStatus('ok', `${L.deleted}: ${deletedSlug}`);
-        // Background refresh with cache-bust
         await loadArticleList(true);
       } catch (e) {
         showStatus('err', `${L.deleteFailed}: ${e.message}`);
-      } finally {
-        deleteBtn.disabled = false;
-        deleteBtn.textContent = L.delete;
-      }
+      } finally { deleteBtn.disabled = false; deleteBtn.textContent = L.delete; }
     }
 
-    // ---- GitHub API ----
     async function gh(path, opts = {}) {
       const token = getToken();
       if (!token) throw new Error('No GitHub token. Click Settings to add.');
@@ -792,15 +685,12 @@
       return res.json();
     }
 
-    // Decode GitHub base64 content (which is UTF-8 bytes) to a JS string
     function decodeContent(b64) {
       const binary = atob(b64.replace(/\n/g, ''));
       const bytes = new Uint8Array(binary.length);
       for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
       return new TextDecoder('utf-8').decode(bytes);
     }
-
-    // Encode a JS string to base64 (UTF-8)
     function encodeContent(str) {
       const bytes = new TextEncoder().encode(str);
       let binary = '';
@@ -819,9 +709,7 @@
           ? `/repos/${REPO}/contents/src/content/news/${currentListLang}?_=${Date.now()}`
           : `/repos/${REPO}/contents/src/content/news/${currentListLang}`;
         const data = await gh(url);
-        const items = data
-          .filter(f => f.name.endsWith('.md'))
-          .sort((a, b) => b.name.localeCompare(a.name));
+        const items = data.filter(f => f.name.endsWith('.md')).sort((a, b) => b.name.localeCompare(a.name));
         const html = items.map(f => {
           const slug = f.name.replace(/\.md$/, '');
           return `<div class="list__item" data-slug="${slug}" data-sha="${f.sha}">
@@ -847,8 +735,7 @@
         const meta = parseFrontmatter(fmMatch[1]);
         const body = fmMatch[2];
         fillForm(meta, body, data.sha);
-        currentFile = slug;
-        currentSha = sha;
+        currentFile = slug; currentSha = sha;
         document.querySelectorAll('.list__item').forEach(el => el.classList.toggle('list__item--active', el.dataset.slug === slug));
         document.getElementById('deleteBtn').classList.remove('hidden');
         showStatus('ok', `${i18n[currentLang].loadedOk} "${slug}".`);
@@ -876,61 +763,34 @@
     async function publish() {
       const title = document.getElementById('title').value.trim();
       const date = document.getElementById('date').value;
-      if (!title || !date) {
-        showStatus('err', 'Title and date are required.');
-        return;
-      }
-
+      if (!title || !date) { showStatus('err', 'Title and date are required.'); return; }
       const slug = (currentFile || slugify(title));
       const path = `src/content/news/${currentLang}/${slug}.md`;
       const content = encodeContent(buildFullDoc());
-      const message = currentSha
-        ? `cms: update article "${slug}"`
-        : `cms: create article "${slug}"`;
-
+      const message = currentSha ? `cms: update article "${slug}"` : `cms: create article "${slug}"`;
       const publishBtn = document.getElementById('publishBtn');
-      publishBtn.disabled = true;
-      publishBtn.textContent = 'Publishing…';
-
+      publishBtn.disabled = true; publishBtn.textContent = 'Publishing…';
       try {
-        const body = {
-          message,
-          content,
-          branch: BRANCH,
-        };
+        const body = { message, content, branch: BRANCH };
         if (currentSha) body.sha = currentSha;
-
-        const result = await gh(`/repos/${REPO}/contents/${path}`, {
-          method: 'PUT',
-          body: JSON.stringify(body),
-        });
-
+        const result = await gh(`/repos/${REPO}/contents/${path}`, { method: 'PUT', body: JSON.stringify(body) });
         showStatus('ok', `Published! Commit ${result.commit.sha.slice(0, 7)}. Site rebuilds in ~1 min.`);
         currentSha = result.content.sha;
         currentFile = slug;
         loadArticleList();
       } catch (e) {
         showStatus('err', `Publish failed: ${e.message}`);
-      } finally {
-        publishBtn.disabled = false;
-        publishBtn.textContent = 'Publish to GitHub';
-      }
+      } finally { publishBtn.disabled = false; publishBtn.textContent = 'Publish to GitHub'; }
     }
 
     function slugify(s) {
-      return s.toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '')
-        .slice(0, 60);
+      return s.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
     }
 
     function escapeHtml(s) {
       return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
-    // ---- Language tabs ----
     document.querySelectorAll('.lang-tabs').forEach(group => {
       group.addEventListener('click', (e) => {
         const tab = e.target.closest('.lang-tab');
@@ -938,17 +798,11 @@
         const lang = tab.dataset.lang || tab.dataset.listLang;
         const isList = !!tab.dataset.listLang;
         group.querySelectorAll('.lang-tab').forEach(t => t.classList.toggle('lang-tab--active', t === tab));
-        if (isList) {
-          currentListLang = lang;
-          loadArticleList();
-        } else {
-          currentLang = lang;
-          applyLang();
-        }
+        if (isList) { currentListLang = lang; loadArticleList(); }
+        else { currentLang = lang; applyLang(); }
       });
     });
 
-    // ---- Buttons ----
     document.getElementById('publishBtn').addEventListener('click', publish);
     document.getElementById('previewBtn').addEventListener('click', () => {
       const card = document.getElementById('previewCard');
@@ -962,7 +816,6 @@
     });
     document.getElementById('deleteBtn').addEventListener('click', deleteArticle);
 
-    // Image upload handlers
     document.getElementById('image').addEventListener('input', updateImagePreview);
     document.getElementById('imageFile').addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -974,51 +827,36 @@
       updateImagePreview();
     });
 
-    // ---- Minimal markdown renderer (headings, bold, italic, links, lists, blockquote, code, hr) ----
     function renderMarkdown(md) {
       let html = escapeHtml(md);
-      // Code blocks
       html = html.replace(/```([\s\S]*?)```/g, (_, code) => `<pre><code>${code.trim()}</code></pre>`);
-      // Inline code
       html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-      // Headings
       html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
       html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
       html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
-      // Blockquote
       html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-      // Bold
       html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-      // Italic
       html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-      // Links
       html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-      // Lists
       html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
       html = html.replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
-      // Paragraphs (split on double newline)
       html = html.split(/\n\n+/).map(block => {
         if (/^<(h\d|ul|ol|pre|blockquote)/.test(block.trim())) return block;
         if (!block.trim()) return '';
         return `<p>${block.replace(/\n/g, '<br>')}</p>`;
       }).join('\n');
-      // Horizontal rule
       html = html.replace(/^---$/gm, '<hr>');
       return html;
     }
 
-    // ---- Show app ----
     function showApp() {
       document.getElementById('app').classList.remove('hidden');
       setToday();
       initEditor();
       applyLang();
       const token = getToken();
-      if (token) {
-        loadArticleList();
-      } else {
-        setTimeout(() => settingsModal.classList.add('modal--open'), 200);
-      }
+      if (token) loadArticleList();
+      else setTimeout(() => settingsModal.classList.add('modal--open'), 200);
     }
   </script>
 </body>
