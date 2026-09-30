@@ -14,10 +14,10 @@ const bgClass = {
   navy: 'bg-navy text-body',
 }[bg];
 const padClass = {
-  sm: 'py-12 md:py-16',
-  md: 'py-20 md:py-28',
-  lg: 'py-28 md:py-36',
-}[pad];
+    sm: 'py-10',
+    md: 'py-20 md:py-28',
+    lg: 'py-28 md:py-36',
+  }[pad];
 ---
 <section id={id} class:list={[bgClass, padClass, cls]}>
   <slot />
