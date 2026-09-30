@@ -276,6 +276,22 @@
           </div>
 
           <div class="field">
+            <label class="field__label" id="lblImage" for="image">Cover Image (used on news list cards)</label>
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+              <input id="image" class="field__input" type="text" placeholder="/img/news/article-slug.jpg" style="flex: 1;" />
+              <label class="btn btn--ghost btn--sm" style="cursor: pointer; margin: 0;">
+                <span id="lblUpload">Upload…</span>
+                <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="display: none;" />
+              </label>
+            </div>
+            <div id="imagePreview" class="hidden" style="margin-top: 8px;">
+              <img id="imagePreviewImg" src="" alt="" style="max-width: 200px; max-height: 120px; border: 1px solid var(--hairline-strong);" />
+              <button type="button" id="imageRemove" class="btn btn--danger btn--sm" style="margin-left: 8px;">Remove</button>
+            </div>
+            <div id="imageStatus" class="hidden" style="margin-top: 8px; font-size: 12px; color: var(--muted);"></div>
+          </div>
+
+          <div class="field">
             <label class="field__label" id="lblKeywords" for="keywords">SEO Keywords (comma-separated)</label>
             <input id="keywords" class="field__input" type="text" placeholder="Hong Kong aerospace, talent policy" />
           </div>
@@ -338,6 +354,11 @@
         author: '作者',
         readingTime: '閱讀時間 (分鐘)',
         keywords: 'SEO 關鍵字 (逗號分隔)',
+        image: '封面圖片 (顯示喺新聞列表卡片)',
+        upload: '上傳…',
+        remove: '移除',
+        uploadFailed: '上傳失敗',
+        uploadOk: '已上傳',
         body: '內文 (Markdown)',
         publish: '發佈到 GitHub',
         preview: '預覽',
@@ -379,6 +400,11 @@
         author: '作者',
         readingTime: '阅读时间 (分钟)',
         keywords: 'SEO 关键词 (逗号分隔)',
+        image: '封面图片 (显示在新闻列表卡片)',
+        upload: '上传…',
+        remove: '移除',
+        uploadFailed: '上传失败',
+        uploadOk: '已上传',
         body: '正文 (Markdown)',
         publish: '发布到 GitHub',
         preview: '预览',
@@ -420,6 +446,11 @@
         author: 'Author',
         readingTime: 'Reading Time (min)',
         keywords: 'SEO Keywords (comma-separated)',
+        image: 'Cover Image (shown on news list cards)',
+        upload: 'Upload…',
+        remove: 'Remove',
+        uploadFailed: 'Upload failed',
+        uploadOk: 'Uploaded',
         body: 'Body (Markdown)',
         publish: 'Publish to GitHub',
         preview: 'Preview',
@@ -464,6 +495,9 @@
       document.getElementById('lblAuthor').textContent = L.author;
       document.getElementById('lblReading').textContent = L.readingTime;
       document.getElementById('lblKeywords').textContent = L.keywords;
+      document.getElementById('lblImage').textContent = L.image;
+      document.getElementById('lblUpload').textContent = L.upload;
+      document.getElementById('imageRemove').textContent = L.remove;
       document.getElementById('lblBody').textContent = L.body;
       document.getElementById('publishBtn').textContent = L.publish;
       document.getElementById('previewBtn').textContent = L.preview;
@@ -589,6 +623,7 @@
       const readingMinutes = parseInt(document.getElementById('readingMinutes').value, 10) || 4;
       const keywordsRaw = document.getElementById('keywords').value.trim();
       const keywords = keywordsRaw ? keywordsRaw.split(',').map(k => k.trim()).filter(Boolean) : [];
+      const image = document.getElementById('image').value.trim();
 
       const quoteIfColon = (s) => /[:'"]/.test(s) ? `"${s.replace(/"/g, '\\"')}"` : s;
 
@@ -603,6 +638,7 @@
         fm += `keywords:\n`;
         keywords.forEach(k => { fm += `  - ${k}\n`; });
       }
+      if (image) fm += `image: ${quoteIfColon(image)}\n`;
       fm += `---\n\n`;
       return fm;
     }
@@ -619,6 +655,8 @@
       document.getElementById('author').value = meta.author || 'HATDF Editorial';
       document.getElementById('readingMinutes').value = meta.readingMinutes || 4;
       document.getElementById('keywords').value = (meta.keywords || []).join(', ');
+      document.getElementById('image').value = meta.image || '';
+      updateImagePreview();
       if (easyMDE) easyMDE.value(body);
       currentSha = sha || null;
     }
@@ -629,6 +667,69 @@
       currentFile = null;
       currentSha = null;
       document.getElementById('deleteBtn').classList.add('hidden');
+      updateImagePreview();
+    }
+
+    function updateImagePreview() {
+      const url = document.getElementById('image').value.trim();
+      const preview = document.getElementById('imagePreview');
+      const img = document.getElementById('imagePreviewImg');
+      if (url) {
+        img.src = url;
+        preview.classList.remove('hidden');
+      } else {
+        preview.classList.add('hidden');
+      }
+    }
+
+    async function uploadImage(file) {
+      const L = i18n[currentLang];
+      const status = document.getElementById('imageStatus');
+      const uploadLabel = document.getElementById('lblUpload');
+      status.classList.remove('hidden');
+      status.textContent = `Uploading ${file.name} (${(file.size / 1024).toFixed(0)} KB)...`;
+      uploadLabel.textContent = '...';
+
+      const ext = file.name.split('.').pop().toLowerCase();
+      const slugBase = currentFile || slugify(document.getElementById('title').value.trim() || 'article');
+      const filename = `${slugBase}.${ext}`;
+      const path = `public/img/news/${filename}`;
+
+      try {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        const content = btoa(binary);
+
+        let sha = undefined;
+        try {
+          const existing = await gh(`/repos/${REPO}/contents/${path}?_=${Date.now()}`);
+          sha = existing.sha;
+        } catch (e) { /* doesn't exist yet */ }
+
+        const body = {
+          message: `cms: upload cover image for "${slugBase}"`,
+          content,
+          branch: BRANCH,
+        };
+        if (sha) body.sha = sha;
+
+        await gh(`/repos/${REPO}/contents/${path}`, {
+          method: 'PUT',
+          body: JSON.stringify(body),
+        });
+
+        const publicUrl = `/img/news/${filename}`;
+        document.getElementById('image').value = publicUrl;
+        updateImagePreview();
+        status.textContent = `${L.uploadOk}: ${publicUrl}`;
+        showStatus('ok', `${L.uploadOk}: ${filename}`);
+      } catch (e) {
+        status.textContent = `${L.uploadFailed}: ${e.message}`;
+        showStatus('err', `${L.uploadFailed}: ${e.message}`);
+      } finally {
+        uploadLabel.textContent = L.upload;
+      }
     }
 
     async function deleteArticle() {
@@ -860,6 +961,18 @@
       if (confirm(i18n[currentLang].clearConfirm)) clearForm();
     });
     document.getElementById('deleteBtn').addEventListener('click', deleteArticle);
+
+    // Image upload handlers
+    document.getElementById('image').addEventListener('input', updateImagePreview);
+    document.getElementById('imageFile').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) uploadImage(file);
+      e.target.value = '';
+    });
+    document.getElementById('imageRemove').addEventListener('click', () => {
+      document.getElementById('image').value = '';
+      updateImagePreview();
+    });
 
     // ---- Minimal markdown renderer (headings, bold, italic, links, lists, blockquote, code, hr) ----
     function renderMarkdown(md) {

@@ -46,6 +46,7 @@ const news = (await getCollection('news', ({ id }) => id.startsWith(`${lang}/`))
               excerpt={n.data.excerpt}
               date={n.data.date}
               lang={lang}
+              image={n.data.image}
             />
           ))}
         </div>

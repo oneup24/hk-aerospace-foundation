@@ -10,6 +10,7 @@ const news = defineCollection({
     author: z.string().optional(),
     readingMinutes: z.number().int().positive().optional(),
     keywords: z.array(z.string()).optional(),
+    image: z.string().optional(),
   }),
 });
 
