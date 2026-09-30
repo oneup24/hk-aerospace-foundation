@@ -474,17 +474,17 @@ export const D: Record<"hk" | "zh" | "en", Dict> = {
       ctaSecondary: "Read all insights",
       slider1Eyebrow: "Latest News",
       slider1Title:
-        'Hong Kong\u2019s First "Space Dream" Aerospace AI Innovation Competition for Primary & Secondary Schools Officially Launches',
+        'Hong Kong\u2019s First "Star Catcher" Aerospace AI Innovation Competition for Primary & Secondary Schools Officially Launches',
       slider1Caption:
         "Group photo with the Subsidised Primary Schools Council (SPSC) and the Hong Kong Aerospace Technology Education Academy (HKATA).",
       slider2Eyebrow: "Latest News",
       slider2Title:
-        'Hong Kong\u2019s First "Space Dream" Aerospace AI Innovation Competition for Primary & Secondary Schools Officially Launches',
+        'Hong Kong\u2019s First "Star Catcher" Aerospace AI Innovation Competition for Primary & Secondary Schools Officially Launches',
       slider2Caption:
         "Group photo with the Hong Kong Subsidised Secondary Schools Council (HKSSSC) and the Hong Kong Aerospace Technology Education Academy (HKATA).",
       slider3Eyebrow: "Latest News",
       slider3Title:
-        'Hong Kong\u2019s First "Space Dream" Aerospace AI Innovation Competition for Primary & Secondary Schools Officially Launches',
+        'Hong Kong\u2019s First "Star Catcher" Aerospace AI Innovation Competition for Primary & Secondary Schools Officially Launches',
       slider3Caption:
         "300,000 students gaze at the stars — from the classroom to the cosmos.",
     },
