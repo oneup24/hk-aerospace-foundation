@@ -281,6 +281,7 @@
             <button id="publishBtn" class="btn btn--gold">Publish to GitHub</button>
             <button id="previewBtn" class="btn btn--ghost">Preview</button>
             <button id="clearBtn" class="btn btn--danger">Clear Form</button>
+            <button id="deleteBtn" class="btn btn--danger hidden">Delete Article</button>
           </div>
         </div>
 
@@ -333,6 +334,7 @@
         publish: '發佈到 GitHub',
         preview: '預覽',
         clear: '清除表單',
+        delete: '刪除文章',
         existingArticles: '現有文章',
         previewTitle: '預覽',
         loading: '載入中…',
@@ -344,6 +346,9 @@
         published: '已發佈',
         publishFailed: '發佈失敗',
         loadFailed: '載入失敗',
+        deleted: '已刪除',
+        deleteFailed: '刪除失敗',
+        deleteConfirm: '確認刪除「{title}」？此動作不能撤銷。',
         tokenSaved: 'Token 已儲存。',
         tokenCleared: 'Token 已清除。',
         clearConfirm: '確認清除所有表單欄位？',
@@ -368,10 +373,11 @@
         publish: '发布到 GitHub',
         preview: '预览',
         clear: '清除表单',
+        delete: '删除文章',
         existingArticles: '现有文章',
         previewTitle: '预览',
         loading: '载入中…',
-        addToken: '请到 Settings 加入即时 GFM token 以载入文章。',
+        addToken: '请到 Settings 加入 GitHub token 以载入文章。',
         noArticles: '尚无文章。',
         error: '错误',
         required: '标题和日期为必填。',
@@ -379,6 +385,9 @@
         published: '已发布',
         publishFailed: '发布失败',
         loadFailed: '载入失败',
+        deleted: '已删除',
+        deleteFailed: '删除失败',
+        deleteConfirm: '确认删除「{title}」？此动作不能撤销。',
         tokenSaved: 'Token 已储存。',
         tokenCleared: 'Token 已清除。',
         clearConfirm: '确认清除所有表单字段？',
@@ -403,6 +412,7 @@
         publish: 'Publish to GitHub',
         preview: 'Preview',
         clear: 'Clear Form',
+        delete: 'Delete Article',
         existingArticles: 'Existing Articles',
         previewTitle: 'Preview',
         loading: 'Loading…',
@@ -414,6 +424,9 @@
         published: 'Published',
         publishFailed: 'Publish failed',
         loadFailed: 'Load failed',
+        deleted: 'Deleted',
+        deleteFailed: 'Delete failed',
+        deleteConfirm: 'Delete "{title}"? This cannot be undone.',
         tokenSaved: 'Token saved.',
         tokenCleared: 'Token cleared.',
         clearConfirm: 'Clear all form fields?',
@@ -458,6 +471,7 @@
         <option value="${L.catDeep}">${L.catDeep}</option>
         <option value="${L.catNews}">${L.catNews}</option>
       `;
+      document.getElementById('deleteBtn').textContent = L.delete;
 
       // Update user label
       const token = getToken();
@@ -596,6 +610,42 @@
       fillForm({}, '', null);
       setToday();
       currentFile = null;
+      currentSha = null;
+      document.getElementById('deleteBtn').classList.add('hidden');
+    }
+
+    async function deleteArticle() {
+      if (!currentFile || !currentSha) {
+        showStatus('err', 'Load an article first.');
+        return;
+      }
+      const title = document.getElementById('title').value.trim();
+      const L = i18n[currentLang];
+      const confirmMsg = L.deleteConfirm.replace('{title}', title || currentFile);
+      if (!confirm(confirmMsg)) return;
+
+      const path = `src/content/news/${currentListLang}/${currentFile}.md`;
+      const deleteBtn = document.getElementById('deleteBtn');
+      deleteBtn.disabled = true;
+      deleteBtn.textContent = '...';
+      try {
+        await gh(`/repos/${REPO}/contents/${path}`, {
+          method: 'DELETE',
+          body: JSON.stringify({
+            message: `cms: delete article "${currentFile}"`,
+            sha: currentSha,
+            branch: BRANCH,
+          }),
+        });
+        showStatus('ok', `${L.deleted}: ${currentFile}`);
+        clearForm();
+        loadArticleList();
+      } catch (e) {
+        showStatus('err', `${L.deleteFailed}: ${e.message}`);
+      } finally {
+        deleteBtn.disabled = false;
+        deleteBtn.textContent = L.delete;
+      }
     }
 
     // ---- GitHub API ----
@@ -657,9 +707,10 @@
         currentFile = slug;
         currentSha = sha;
         document.querySelectorAll('.list__item').forEach(el => el.classList.toggle('list__item--active', el.dataset.slug === slug));
-        showStatus('ok', `Loaded "${slug}".`);
+        document.getElementById('deleteBtn').classList.remove('hidden');
+        showStatus('ok', `${i18n[currentLang].loadedOk} "${slug}".`);
       } catch (e) {
-        showStatus('err', `Load failed: ${e.message}`);
+        showStatus('err', `${i18n[currentLang].loadFailed}: ${e.message}`);
       }
     }
 
@@ -766,6 +817,7 @@
     document.getElementById('clearBtn').addEventListener('click', () => {
       if (confirm(i18n[currentLang].clearConfirm)) clearForm();
     });
+    document.getElementById('deleteBtn').addEventListener('click', deleteArticle);
 
     // ---- Minimal markdown renderer (headings, bold, italic, links, lists, blockquote, code, hr) ----
     function renderMarkdown(md) {
